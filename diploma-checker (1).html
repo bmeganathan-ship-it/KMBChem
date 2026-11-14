@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IB Diploma Award Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F6;--surface:#FFFFFF;--ink:#14263B;--muted:#55657A;--line:#CBD5E1;
+  --accent:#1D4E89;--accent-ink:#FFFFFF;--soft:#E2EAF4;
+  --pass:#1B7A5A;--passbg:#E3F4EC;--fail:#B42318;--failbg:#FDECEA;--hl:#F6E7B8;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1A27;--surface:#172536;--ink:#E6EDF5;--muted:#9FB0C3;--line:#2A3B50;
+    --accent:#7FB0E8;--accent-ink:#0F1A27;--soft:#1F3148;
+    --pass:#5CC59A;--passbg:#133528;--fail:#F28B82;--failbg:#3A1C1C;--hl:#4A3E14;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1A27;--surface:#172536;--ink:#E6EDF5;--muted:#9FB0C3;--line:#2A3B50;
+  --accent:#7FB0E8;--accent-ink:#0F1A27;--soft:#1F3148;
+  --pass:#5CC59A;--passbg:#133528;--fail:#F28B82;--failbg:#3A1C1C;--hl:#4A3E14;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5}
+body.big{font-size:19px}
+h1,h2{font-family:"Literata",Georgia,"Times New Roman",serif;font-weight:700;line-height:1.2;margin:0}
+h1{font-size:1.9em}
+h2{font-size:1.2em;margin-bottom:.6em}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 48px}
+header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+header p{margin:.35em 0 0;color:var(--muted);max-width:62ch}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:.45em .9em;border-radius:8px}
+.btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.examples{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:20px}
+.examples h2{font-size:1em;margin-bottom:.5em}
+.ex-list{display:flex;flex-wrap:wrap;gap:8px}
+.ex-note{margin:.7em 0 0;color:var(--muted);min-height:1.5em}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.subj{display:grid;grid-template-columns:minmax(120px,1fr) auto auto;gap:10px 14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.subj:first-of-type{border-top:0}
+.subj .grp{font-size:.8em;color:var(--muted);display:block}
+.subj input[type=text]{font:inherit;color:var(--ink);background:transparent;border:1px solid transparent;border-bottom-color:var(--line);padding:.15em .2em;width:100%}
+.subj input[type=text]:focus{border-color:var(--accent)}
+@media (max-width:620px){.subj{grid-template-columns:1fr auto}.subj .grades{grid-column:1/-1}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;inset:0;margin:0}
+.seg span{display:block;padding:.3em .62em;min-width:2.1em;text-align:center;border-left:1px solid var(--line)}
+.seg label:first-child span{border-left:0}
+.seg input:checked+span{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.seg input:focus-visible+span{outline:3px solid var(--accent);outline-offset:-3px}
+.core{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media (max-width:620px){.core{grid-template-columns:1fr}}
+.core label.field{display:flex;flex-direction:column;gap:4px;font-weight:700}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.4em .5em}
+.core3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:4px}
+.cc{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.cc h3{font-family:"Literata",Georgia,serif;font-size:1.02em;margin:0}
+.cc .info{margin:0;color:var(--muted);font-size:.88em}
+body:not(.explain) .cc .info{display:none}
+.cc label.field{display:flex;flex-direction:column;gap:4px;font-weight:700}
+.ck{display:flex;gap:8px;align-items:flex-start}
+.ck input{width:1.15em;height:1.15em;margin-top:.2em;accent-color:var(--accent);flex:none}
+.casStatus{margin:0;font-weight:700}
+.casStatus.done{color:var(--pass)}
+.casStatus.todo{color:var(--fail)}
+.checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px}
+.checks label{display:flex;gap:8px;align-items:center}
+.checks input{width:1.15em;height:1.15em;accent-color:var(--accent)}
+.verdict{position:sticky;top:calc(12px + env(safe-area-inset-top,0px))}
+.result{border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.result.pass{background:var(--passbg);color:var(--pass)}
+.result.fail{background:var(--failbg);color:var(--fail)}
+.result .big{font-family:"Literata",Georgia,serif;font-size:1.6em;font-weight:700;display:block}
+.score{display:flex;align-items:baseline;gap:10px;margin:2px 0 12px}
+.score .n{font-family:"Literata",Georgia,serif;font-size:3.2em;font-weight:700;line-height:1}
+.score .of{color:var(--muted)}
+.sum{width:100%;border-collapse:collapse;margin-bottom:12px}
+.sum td{padding:3px 0;border-bottom:1px solid var(--line)}
+.sum td:last-child{text-align:right;font-weight:700}
+ul.rules{list-style:none;margin:0;padding:0}
+ul.rules li{display:grid;grid-template-columns:1.6em 1fr;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+ul.rules li:last-child{border-bottom:0}
+.mark{font-weight:700}
+.ok .mark{color:var(--pass)}
+.bad .mark{color:var(--fail)}
+.bad .rule{font-weight:700}
+.why{display:block;color:var(--muted);font-size:.88em}
+body:not(.explain) .why{display:none}
+.matrix-wrap{overflow-x:auto;margin-top:20px}
+table.matrix{border-collapse:collapse;min-width:520px;width:100%;text-align:center}
+.matrix th,.matrix td{border:1px solid var(--line);padding:.5em .4em}
+.matrix thead th{background:var(--soft)}
+.matrix tbody th{background:var(--soft);text-align:left}
+.matrix td button{all:unset;cursor:pointer;display:block;width:100%;padding:.1em 0;border-radius:4px}
+.matrix td button:focus-visible{outline:3px solid var(--accent)}
+.matrix td.f{color:var(--fail);font-weight:700}
+.matrix td.cur{background:var(--hl);font-weight:700;box-shadow:inset 0 0 0 2px var(--accent)}
+.caption{color:var(--muted);margin:.5em 0 0;font-size:.92em}
+.warn{color:var(--fail);font-weight:700;margin:.4em 0 0}
+footer{color:var(--muted);font-size:.85em;margin-top:28px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){.result{transition:background-color .25s,color .25s}}
+</style>
+</head>
+<body class="explain">
+<div class="wrap">
+<header>
+  <div>
+    <h1>IB Diploma Award Checker</h1>
+    <p>Enter a student’s grades to see their points, bonus from TOK and the Extended Essay, and every condition the IB checks before awarding the diploma.</p>
+  </div>
+  <div class="tools">
+    <button class="btn" id="explainBtn" aria-pressed="true">Show explanations</button>
+    <button class="btn" id="bigBtn" aria-pressed="false">Larger text</button>
+    <button class="btn" id="resetBtn">Clear grades</button>
+  </div>
+</header>
+
+<section class="examples" aria-labelledby="exh">
+  <h2 id="exh">Try a worked example</h2>
+  <div class="ex-list" id="exList"></div>
+  <p class="ex-note" id="exNote" aria-live="polite"></p>
+</section>
+
+<div class="grid">
+  <section class="panel" aria-labelledby="sh">
+    <h2 id="sh">Subjects</h2>
+    <div id="subjects"></div>
+    <p class="warn" id="hlWarn" hidden></p>
+
+    <h2 style="margin-top:1.2em">The Core</h2>
+    <div class="core3">
+      <div class="cc">
+        <h3>Theory of Knowledge</h3>
+        <p class="info">About 100 hours on how we know what we claim to know. Assessed by an exhibition (one third: three objects, up to 950 words) and an essay on a prescribed title (two thirds: up to 1,600 words).</p>
+        <label class="field">Grade<select id="tok"></select></label>
+        <label class="ck"><input type="checkbox" id="tokEx" checked> Exhibition submitted</label>
+        <label class="ck"><input type="checkbox" id="tokEs" checked> Essay submitted</label>
+      </div>
+      <div class="cc">
+        <h3>Extended Essay</h3>
+        <p class="info">Independent research of up to 4,000 words in one subject, about 40 hours of work, with three reflection sessions with a supervisor (the last is a short viva voce). A new guide applies from May 2027.</p>
+        <label class="field">Grade<select id="ee"></select></label>
+        <label class="ck"><input type="checkbox" id="eeSub" checked> Essay and reflection form submitted</label>
+      </div>
+      <div class="cc">
+        <h3>Creativity, Activity, Service</h3>
+        <p class="info">About 18 months of experiences across creativity, activity and service. Not graded, but every requirement must be met.</p>
+        <label class="ck"><input type="checkbox" class="casi" checked> Regular reflections recorded</label>
+        <label class="ck"><input type="checkbox" class="casi" checked> Evidence of all seven learning outcomes</label>
+        <label class="ck"><input type="checkbox" class="casi" checked> CAS project completed (at least one month)</label>
+        <label class="ck"><input type="checkbox" class="casi" checked> Three CAS interviews with the coordinator</label>
+        <p class="casStatus" id="casStatus" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="integ" checked> No academic misconduct</label>
+    </div>
+
+    <div class="matrix-wrap">
+      <h2>TOK and Extended Essay bonus points</h2>
+      <table class="matrix" id="matrix" aria-describedby="mcap"></table>
+      <p class="caption" id="mcap">Find TOK down the side and the Extended Essay across the top. Select any box to set both grades. Elementary in either one means no diploma.</p>
+    </div>
+  </section>
+
+  <aside class="panel verdict" aria-labelledby="vh">
+    <h2 id="vh">Result</h2>
+    <div class="result" id="result" aria-live="polite"></div>
+    <div class="score"><span class="n" id="total">0</span><span class="of">of 45 points</span></div>
+    <table class="sum"><tbody id="sum"></tbody></table>
+    <h2>Conditions checked</h2>
+    <ul class="rules" id="rules"></ul>
+  </aside>
+</div>
+
+<footer>Based on the failing conditions in the IB Diploma Programme General Regulations. Always confirm against the current regulations on the Programme Resource Centre.</footer>
+</div>
+
+<script>
+const DESC=["Excellent","Good","Satisfactory","Mediocre","Elementary"];
+// rows = TOK, cols = EE; null = failing condition
+const M=[[3,3,2,2,null],[3,2,2,1,null],[2,2,1,0,null],[2,1,0,0,null],[null,null,null,null,null]];
+const GROUPS=["Group 1","Group 2","Group 3","Group 4","Group 5","Group 6 or second 1–4"];
+const DEFAULT_NAMES=["English A","French B","Economics","Chemistry","Mathematics","Biology"];
+let S={subs:DEFAULT_NAMES.map((n,i)=>({name:n,level:i<3?"HL":"SL",grade:null})),tok:2,ee:2,tokEx:true,tokEs:true,eeSub:true,casItems:[true,true,true,true],integ:true};
+
+const EX=[
+ {t:"27 points, still fails",note:"Plenty of points, but the three SL grades add up to only 8, below the minimum of 9.",
+  subs:[["English A","SL",2],["French B","SL",3],["Economics","HL",4],["Chemistry","HL",7],["Mathematics","SL",3],["Biology","HL",7]],tok:2,ee:2},
+ {t:"Rescued by the Core",note:"Only 23 subject points. Good in TOK and Satisfactory in the Extended Essay add 2, lifting the student to 25.",
+  subs:[["English A","HL",4],["French B","SL",4],["Economics","HL",4],["Chemistry","HL",4],["Mathematics","SL",3],["Biology","SL",4]],tok:1,ee:2},
+ {t:"40 points, Elementary essay",note:"Excellent subject grades cannot make up for Elementary in the Extended Essay.",
+  subs:[["English A","HL",7],["French B","SL",6],["Economics","HL",7],["Chemistry","HL",6],["Mathematics","SL",7],["Biology","SL",7]],tok:0,ee:4},
+ {t:"Four HL subjects",note:"Only the best three HL grades count (6 + 5 + 4 = 15). With two SL subjects the SL minimum drops to 5.",
+  subs:[["English A","HL",6],["French B","SL",3],["Economics","HL",5],["Chemistry","HL",4],["Mathematics","SL",2],["Biology","HL",2]],tok:0,ee:1},
+ {t:"Four grades of 3",note:"26 points and both HL and SL totals pass, but four grades of 3 or below is a failing condition.",
+  subs:[["English A","HL",6],["French B","SL",3],["Economics","HL",6],["Chemistry","HL",3],["Mathematics","SL",3],["Biology","SL",3]],tok:1,ee:1},
+ {t:"CAS not completed",note:"A strong student who has not completed CAS is not awarded the diploma.",
+  subs:[["English A","HL",6],["French B","SL",6],["Economics","HL",6],["Chemistry","HL",7],["Mathematics","SL",6],["Biology","SL",6]],tok:1,ee:0,casItems:[true,true,false,true]},
+ {t:"TOK essay not submitted",note:"A missing TOK essay gives an N for TOK. An N in any component means no diploma, however strong the grades.",
+  subs:[["English A","HL",5],["French B","SL",5],["Economics","HL",6],["Chemistry","HL",5],["Mathematics","SL",5],["Biology","SL",6]],tok:2,ee:1,tokEs:false}
+];
+
+const $=id=>document.getElementById(id);
+
+function buildSubjects(){
+  const host=$("subjects");host.innerHTML="";
+  S.subs.forEach((s,i)=>{
+    const row=document.createElement("div");row.className="subj";
+    const nameId="nm"+i;
+    let lv=`<div class="seg" role="radiogroup" aria-label="${GROUPS[i]} level">`+["HL","SL"].map(L=>`<label><input type="radio" name="lv${i}" value="${L}" ${s.level===L?"checked":""}><span>${L}</span></label>`).join("")+`</div>`;
+    let gr=`<div class="seg grades" role="radiogroup" aria-label="${GROUPS[i]} grade">`+[1,2,3,4,5,6,7].map(g=>`<label><input type="radio" name="gr${i}" value="${g}" ${s.grade===g?"checked":""}><span>${g}</span></label>`).join("")+`</div>`;
+    row.innerHTML=`<div><span class="grp">${GROUPS[i]}</span><input type="text" id="${nameId}" value="${s.name}" aria-label="${GROUPS[i]} subject name"></div>${lv}${gr}`;
+    host.appendChild(row);
+    row.querySelector("#"+nameId).addEventListener("input",e=>{S.subs[i].name=e.target.value;render()});
+    row.querySelectorAll(`input[name=lv${i}]`).forEach(r=>r.addEventListener("change",e=>{S.subs[i].level=e.target.value;render()}));
+    row.querySelectorAll(`input[name=gr${i}]`).forEach(r=>r.addEventListener("change",e=>{S.subs[i].grade=+e.target.value;render()}));
+  });
+}
+
+function buildCore(){
+  ["tok","ee"].forEach(k=>{$(k).innerHTML=DESC.map((d,i)=>`<option value="${i}">${d}</option>`).join("");$(k).value=S[k];
+    $(k).onchange=e=>{S[k]=+e.target.value;render()}});
+  ["tokEx","tokEs","eeSub","integ"].forEach(k=>$(k).checked=S[k]);
+  document.querySelectorAll(".casi").forEach((c,i)=>c.checked=S.casItems[i]);
+}
+
+function buildMatrix(){
+  let h="<thead><tr><th scope='col'>TOK ↓ / Extended Essay →</th>"+DESC.map(d=>`<th scope="col">${d}</th>`).join("")+"</tr></thead><tbody>";
+  DESC.forEach((d,r)=>{
+    h+=`<tr><th scope="row">${d}</th>`+DESC.map((e,c)=>{const v=M[r][c];const txt=v===null?"Fail":(v===1?"1 point":v+" points");
+      return `<td data-r="${r}" data-c="${c}" class="${v===null?"f":""}"><button aria-label="TOK ${d}, Extended Essay ${e}: ${txt}">${txt}</button></td>`}).join("")+"</tr>";
+  });
+  $("matrix").innerHTML=h+"</tbody>";
+  $("matrix").querySelectorAll("td button").forEach(b=>b.addEventListener("click",()=>{const td=b.parentElement;S.tok=+td.dataset.r;S.ee=+td.dataset.c;$("tok").value=S.tok;$("ee").value=S.ee;render()}));
+}
+
+function evaluate(){
+  const g=S.subs.map(s=>s.grade);
+  const complete=g.every(x=>x!==null);
+  const hl=S.subs.filter(s=>s.level==="HL").map(s=>s.grade||0).sort((a,b)=>b-a);
+  const sl=S.subs.filter(s=>s.level==="SL").map(s=>s.grade||0);
+  const nHL=hl.length;
+  const subjTotal=g.reduce((a,b)=>a+(b||0),0);
+  const nGrade=!(S.tokEx&&S.tokEs&&S.eeSub);
+  const casDone=S.casItems.filter(Boolean).length;
+  const bonus=nGrade?null:M[S.tok][S.ee];
+  const total=subjTotal+(bonus||0);
+  const hlTotal=hl.slice(0,3).reduce((a,b)=>a+b,0);
+  const slTotal=sl.reduce((a,b)=>a+b,0);
+  const slMin=nHL===4?5:9;
+  const twos=g.filter(x=>x===2).length;
+  const low=g.filter(x=>x!==null&&x<=3).length;
+  const ones=g.filter(x=>x===1).length;
+  const rules=[
+    {ok:casDone===4,rule:`CAS completed (${casDone} of 4 requirements met)`,why:"CAS earns no points, but without it the diploma cannot be awarded."},
+    {ok:!nGrade,rule:"TOK and Extended Essay submitted (no N grade)",why:"A missing component gives an N, which means no diploma."},
+    {ok:total>=24,rule:`At least 24 points in total (now ${total})`,why:"The minimum total, including bonus points."},
+    {ok:M[S.tok][S.ee]!==null,rule:"No Elementary in TOK or the Extended Essay",why:"Elementary in either Core component is a failing condition on its own."},
+    {ok:ones===0,rule:"No grade 1 in any subject",why:"A single grade 1 means no diploma."},
+    {ok:twos<=2,rule:`No more than two grade 2s (now ${twos})`,why:"Three or more grade 2s is a failing condition."},
+    {ok:low<=3,rule:`Fewer than four grades of 3 or below (now ${low})`,why:"Four or more grades of 3 or below is a failing condition."},
+    {ok:hlTotal>=12,rule:`At least 12 points across HL subjects (now ${hlTotal})`,why:nHL===4?"With four HL subjects, only the best three count.":"An average of 4 across the three HL subjects."},
+    {ok:slTotal>=slMin,rule:`At least ${slMin} points across SL subjects (now ${slTotal})`,why:nHL===4?"With only two SL subjects, the minimum is 5.":"An average of 3 across the three SL subjects."},
+    {ok:S.integ,rule:"No academic misconduct penalty",why:"A finding of academic misconduct can mean no diploma is awarded."}
+  ];
+  return {complete,subjTotal,bonus,total,hlTotal,slTotal,nHL,rules,nGrade,casDone};
+}
+
+function render(){
+  const r=evaluate();
+  const validHL=r.nHL===3||r.nHL===4;
+  const w=$("hlWarn");
+  w.hidden=validHL;
+  if(!validHL)w.textContent=`This combination has ${r.nHL} HL subjects. A diploma student must take 3 or 4 at HL.`;
+  const res=$("result");
+  if(!r.complete){
+    res.className="result";res.style.background="var(--soft)";res.style.color="var(--ink)";
+    res.innerHTML=`<span class="big">Enter all six grades</span>Choose a grade from 1 to 7 for each subject, or try a worked example.`;
+  }else{
+    res.style.background="";res.style.color="";
+    const failed=r.rules.filter(x=>!x.ok);
+    const pass=failed.length===0&&validHL;
+    res.className="result "+(pass?"pass":"fail");
+    res.innerHTML=pass?`<span class="big">Diploma awarded</span>All conditions are met.`
+      :`<span class="big">Diploma not awarded</span>${failed.length?(failed.length===1?"1 condition is":failed.length+" conditions are")+" not met.":"The subject levels are not a valid diploma combination."}`;
+  }
+  $("total").textContent=r.total;
+  const cs=$("casStatus");
+  cs.textContent=r.casDone===4?"CAS complete":`CAS incomplete: ${4-r.casDone} requirement${4-r.casDone===1?"":"s"} missing`;
+  cs.className="casStatus "+(r.casDone===4?"done":"todo");
+  $("sum").innerHTML=`<tr><td>Six subjects</td><td>${r.subjTotal} / 42</td></tr>
+    <tr><td>TOK + Extended Essay bonus</td><td>${r.nGrade?"N (not submitted)":(r.bonus===null?"Fail":"+"+r.bonus)}</td></tr>
+    <tr><td>HL total${r.nHL===4?" (best three)":""}</td><td>${r.hlTotal}</td></tr>
+    <tr><td>SL total</td><td>${r.slTotal}</td></tr>`;
+  $("rules").innerHTML=r.rules.map(x=>{
+    const state=!r.complete?"":(x.ok?"ok":"bad");
+    const mark=!r.complete?"–":(x.ok?"✓":"✗");
+    return `<li class="${state}"><span class="mark" aria-hidden="true">${mark}</span><span><span class="rule">${r.complete?(x.ok?"Met: ":"Not met: "):""}${x.rule}</span><span class="why">${x.why}</span></span></li>`}).join("");
+  $("matrix").querySelectorAll("td").forEach(td=>td.classList.toggle("cur",+td.dataset.r===S.tok&&+td.dataset.c===S.ee));
+}
+
+function loadExample(e){
+  S.subs=e.subs.map(([name,level,grade])=>({name,level,grade}));
+  S.tok=e.tok;S.ee=e.ee;S.tokEx=true;S.tokEs=e.tokEs!==false;S.eeSub=true;S.casItems=(e.casItems||[true,true,true,true]).slice();S.integ=true;
+  buildSubjects();buildCore();render();
+  $("exNote").textContent=e.note;
+  $("exList").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===e.t?"true":"false"));
+}
+
+$("exList").innerHTML=EX.map((e,i)=>`<button class="btn" data-i="${i}" data-t="${e.t}" aria-pressed="false">${e.t}</button>`).join("");
+$("exList").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>loadExample(EX[+b.dataset.i])));
+$("explainBtn").addEventListener("click",e=>{const on=document.body.classList.toggle("explain");e.currentTarget.setAttribute("aria-pressed",on)});
+$("bigBtn").addEventListener("click",e=>{const on=document.body.classList.toggle("big");e.currentTarget.setAttribute("aria-pressed",on)});
+$("resetBtn").addEventListener("click",()=>{S.subs.forEach(s=>s.grade=null);S.tok=2;S.ee=2;S.tokEx=S.tokEs=S.eeSub=true;S.casItems=[true,true,true,true];S.integ=true;$("exNote").textContent="";
+  $("exList").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed","false"));buildSubjects();buildCore();render()});
+["tokEx","tokEs","eeSub","integ"].forEach(k=>$(k).addEventListener("change",e=>{S[k]=e.target.checked;render()}));
+document.querySelectorAll(".casi").forEach((c,i)=>c.addEventListener("change",e=>{S.casItems[i]=e.target.checked;render()}));
+
+buildSubjects();buildCore();buildMatrix();loadExample(EX[0]);
+</script>
+</body>
+</html>

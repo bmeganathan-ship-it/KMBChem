@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DP Subject Planner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: a planner board. Six timetable blocks on the left, a sticky "My plan" summary on the right; stacks to one column on phones. */
+:root{
+  --bg:#F2F5F4; --surface:#FFFFFF; --surface-2:#E8EEEC; --ink:#14242A; --muted:#556569; --line:#D2DCD9;
+  --accent:#0D6A70; --accent-ink:#FFFFFF; --on-g:#FFFFFF;
+  --ok:#1E7A4C; --warn:#9A5800; --bad:#B3261E; --info:#3C5A66;
+  --g1:#B4443A; --g2:#A0650A; --g3:#6B4FA0; --g4:#1F7A5A; --g5:#2563A8; --g6:#B0377A;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1618; --surface:#162125; --surface-2:#1D2A2F; --ink:#E5EDEB; --muted:#9BABAE; --line:#2B3A3F;
+    --accent:#56C6C4; --accent-ink:#06211F; --on-g:#0E1618;
+    --ok:#5CC98D; --warn:#EFB24C; --bad:#F2877F; --info:#9DBCC7;
+    --g1:#EE8C82; --g2:#E6B055; --g3:#B49DE6; --g4:#5CC499; --g5:#80B3EE; --g6:#E98EC1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1618; --surface:#162125; --surface-2:#1D2A2F; --ink:#E5EDEB; --muted:#9BABAE; --line:#2B3A3F;
+  --accent:#56C6C4; --accent-ink:#06211F; --on-g:#0E1618;
+  --ok:#5CC98D; --warn:#EFB24C; --bad:#F2877F; --info:#9DBCC7;
+  --g1:#EE8C82; --g2:#E6B055; --g3:#B49DE6; --g4:#5CC499; --g5:#80B3EE; --g6:#E98EC1;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,4.6vw,3.1rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.45rem,2.6vw,1.9rem);font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.12rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.1rem;max-width:62ch;color:var(--ink)}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Header */
+header.hero{padding-block:40px 28px;display:flex;flex-direction:column;gap:14px}
+.credit{font-size:.92rem;color:var(--muted);max-width:70ch}
+.steps{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:900px}
+.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.steps b{font-family:var(--font-display);font-size:1.4rem;line-height:1;color:var(--accent);min-width:1.1em}
+@media (max-width:700px){.steps{grid-template-columns:1fr}}
+
+/* Nav */
+nav.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.jump .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.jump a{flex:none;text-decoration:none;color:var(--ink);font-weight:700;font-size:.92rem;padding:6px 12px;border-radius:999px}
+nav.jump a:hover{background:var(--surface-2)}
+
+main{display:flex;flex-direction:column;gap:56px;padding-block:32px 64px}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:64px}
+.sec-head{display:flex;flex-direction:column;gap:6px;max-width:72ch}
+
+/* Overview */
+.overview{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.overview{grid-template-columns:1fr}}
+.table-box{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:700;background:var(--surface-2)}
+.gname{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap}
+.gdot{width:12px;height:12px;border-radius:50%;background:var(--gc);flex:none}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.fact strong{display:block;font-family:var(--font-display);font-size:1.7rem;line-height:1.1}
+.fact span{font-size:.92rem;color:var(--muted)}
+.note{font-size:.9rem;color:var(--muted)}
+
+/* Planner */
+.board{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:24px;align-items:start}
+@media (max-width:960px){.board{grid-template-columns:1fr}}
+.left{display:flex;flex-direction:column;gap:14px;min-width:0}
+.goalbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.goal-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.goal-row label{font-weight:700}
+select,input[type=text]{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0}
+select{max-width:100%}
+.goal-detail{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.goal-detail{grid-template-columns:1fr}}
+.goal-detail h4{margin:0 0 4px;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.goal-detail ul{margin:0;padding-left:1.1em}
+.example{background:var(--surface-2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.example .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--gc) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--gc) 40%,var(--surface))}
+.chip b{color:var(--gc)}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:color-mix(in srgb,var(--accent) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 35%,var(--surface));border-radius:10px;padding:10px 14px;font-size:.95rem}
+
+.block{margin:0;min-width:0;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.block.is-filled{border-color:color-mix(in srgb,var(--gc) 55%,var(--line))}
+.block-head{padding:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;width:100%}
+.block-num{font-family:var(--font-display);font-weight:800;font-size:1.05rem}
+.block-title{font-weight:700}
+.block-groups{font-size:.85rem;color:var(--muted)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.opt{position:relative;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;background:var(--surface);transition:border-color .15s,background-color .15s}
+.opt:hover{border-color:color-mix(in srgb,var(--gc) 60%,var(--line))}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--gc);flex:none;margin-top:3px;display:grid;place-items:center}
+.opt.is-on{border-color:var(--gc);background:color-mix(in srgb,var(--gc) 12%,var(--surface))}
+.opt.is-on .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--gc)}
+.opt:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.opt.is-disabled{opacity:.45;cursor:not-allowed}
+.opt-text{display:flex;flex-direction:column;min-width:0}
+.opt-name{font-weight:700;line-height:1.3}
+.opt-meta{font-size:.82rem;color:var(--muted)}
+.opt-hint{font-size:.88rem;line-height:1.35}
+.levels{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lv-label{font-weight:700;font-size:.92rem}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.seg label{position:relative;padding:5px 18px;cursor:pointer;font-weight:700;font-size:.92rem}
+.seg label+label{border-left:1.5px solid var(--line)}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg label.is-on{background:var(--gc);color:var(--on-g)}
+.seg label.is-disabled{opacity:.4;cursor:not-allowed}
+.seg label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:-3px}
+.lv-note{font-size:.85rem;color:var(--muted)}
+.va-note{font-size:.88rem;color:var(--muted)}
+
+/* Summary */
+.summary{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:70px}
+@media (max-width:960px){.summary{position:static}}
+.sum-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hl-meter{text-align:right}
+.hl-meter strong{font-family:var(--font-display);font-size:1.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.hl-meter span{display:block;font-size:.8rem;color:var(--muted)}
+.name-row{display:flex;flex-direction:column;gap:4px}
+.name-row label{font-size:.85rem;font-weight:700}
+.plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.plan li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;border-radius:9px;background:color-mix(in srgb,var(--gc) 10%,var(--surface))}
+.plan li.empty{background:var(--surface-2);color:var(--muted)}
+.plan .pb{font-family:var(--font-display);font-weight:800;font-size:.85rem;color:var(--gc)}
+.plan li.empty .pb{color:var(--muted)}
+.plan .ps{font-weight:700;line-height:1.3}
+.plan li.empty .ps{font-weight:400}
+.pill{font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;border:1.5px solid var(--gc);color:var(--gc)}
+.pill.HL{background:var(--gc);color:var(--on-g)}
+.core{font-size:.9rem;color:var(--muted)}
+.gchips{display:flex;gap:6px;flex-wrap:wrap}
+.gchip{font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:999px;border:1.5px dashed var(--line);color:var(--muted)}
+.gchip.on{border-style:solid;border-color:var(--gc);background:color-mix(in srgb,var(--gc) 14%,var(--surface));color:var(--ink)}
+.gchip.swap{border-style:dashed;border-color:var(--g4);color:var(--ink)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:.93rem;line-height:1.4}
+.ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;font-weight:700;color:var(--surface)}
+.ic.ok{background:var(--ok)} .ic.warn{background:var(--warn)} .ic.bad{background:var(--bad)} .ic.info{background:var(--info)}
+.ic.todo{background:transparent;border:2px solid var(--muted);color:var(--muted)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border-radius:10px;padding:9px 16px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.small{padding:6px 12px;font-size:.9rem}
+.btn:hover{filter:brightness(1.07)}
+textarea#copy-fallback{width:100%;min-height:180px;font:inherit;font-size:.85rem;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.sum-foot{font-size:.85rem;color:var(--muted)}
+
+/* Subject explorer */
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{font:inherit;font-size:.9rem;font-weight:700;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--gc) 14%,var(--surface));color:var(--ink);border:1px solid color-mix(in srgb,var(--gc) 45%,var(--surface))}
+.tag.plain{background:var(--surface-2);border-color:var(--line)}
+.card dl{margin:0;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
+.card dt{font-size:.75rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.card dd{margin:0}
+.card .flag{font-size:.88rem;background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.card .btn{align-self:flex-start;margin-top:auto}
+
+/* Key words */
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin:0}
+.term{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.term dt{font-family:var(--font-display);font-weight:700;font-size:1.05rem}
+.term dd{margin:4px 0 0;font-size:.95rem}
+
+/* Other routes */
+.routes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.route{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.route ul{margin:0;padding-left:1.1em}
+
+footer{border-top:1px solid var(--line);padding-block:24px 40px;font-size:.9rem;color:var(--muted)}
+footer .wrap{display:flex;flex-direction:column;gap:8px}
+
+/* Toast + phone bar */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:700;font-size:.93rem;max-width:calc(100% - 32px);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+.mbar{display:none}
+@media (max-width:960px){
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:25;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border-top:1.5px solid var(--line);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .mbar span{font-weight:700;font-variant-numeric:tabular-nums}
+  main{padding-bottom:110px}
+}
+@media (min-width:961px){#toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <p class="eyebrow">IB Diploma Programme · Grade 10 subject choices</p>
+  <h1>DP Subject Planner</h1>
+  <p class="lead">For Bishop Mackenzie International School students and families. Explore the 16 subjects taught at school, build a subject plan, and check it against your university goals.</p>
+  <p class="credit">Prepared by K.M. Boopathy, IBDP Chemistry teacher. This is a planning guide, not the official option form: final choices are agreed with the DP Coordinator.</p>
+  <ol class="steps" aria-label="How to use this planner">
+    <li><b>1</b><span>Pick one subject from each of the six blocks.</span></li>
+    <li><b>2</b><span>Set three subjects at Higher Level (HL) and three at Standard Level (SL).</span></li>
+    <li><b>3</b><span>Choose a goal and check your plan. Copy it to share with your tutor or counsellor.</span></li>
+  </ol>
+</header>
+
+<nav class="jump" aria-label="Sections">
+  <div class="wrap">
+    <a href="#overview">Subjects offered</a>
+    <a href="#plan">Build my plan</a>
+    <a href="#subjects">About each subject</a>
+    <a href="#words">Key words</a>
+    <a href="#routes">Other routes</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="overview" aria-labelledby="ov-h">
+    <div class="sec-head">
+      <p class="eyebrow">At a glance</p>
+      <h2 id="ov-h">16 subjects across the six IB groups</h2>
+      <p class="muted">Every Diploma student takes one subject from each of Groups 1 to 5. The sixth subject is either Visual Arts (Group 6) or a second science.</p>
+    </div>
+    <div class="overview">
+      <div class="table-box">
+        <table>
+          <thead><tr><th>Group</th><th>Subjects taught at BMIS</th><th class="n">Count</th></tr></thead>
+          <tbody id="ov-body"></tbody>
+          <tfoot><tr><td colspan="2">Total</td><td class="n">16</td></tr></tfoot>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="facts">
+          <div class="fact"><strong>6</strong><span>subjects, one from each block</span></div>
+          <div class="fact"><strong>3 + 3</strong><span>three at HL, three at SL</span></div>
+          <div class="fact"><strong>3</strong><span>core parts: TOK, Extended Essay, CAS</span></div>
+          <div class="fact"><strong>45</strong><span>maximum points (7 per subject + 3 core)</span></div>
+        </div>
+        <p class="note">* ESS (Environmental Systems &amp; Societies) counts as Group 3, Group 4, or both.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="plan" aria-labelledby="plan-h">
+    <div class="sec-head">
+      <p class="eyebrow">Build my plan</p>
+      <h2 id="plan-h">Choose one subject in each block</h2>
+      <p class="muted">Subjects in the same block are taught at the same time, so you can take only one of them. The blocks follow the November 2026 Grade 11 and 12 exam schedule.</p>
+    </div>
+    <div class="board">
+      <div class="left">
+        <div class="goalbox">
+          <div class="goal-row">
+            <label for="goal">My goal (optional)</label>
+            <select id="goal"></select>
+          </div>
+          <div id="goal-detail"></div>
+        </div>
+        <div class="banner" id="banner" hidden>
+          <span id="banner-text"></span>
+          <button class="btn ghost small" id="clear-btn2" type="button">Start with a blank plan</button>
+        </div>
+        <p class="banner" style="display:block"><b>HL</b> = Higher Level: more depth and more hours. <b>SL</b> = Standard Level. Choose <b>3 subjects at HL and 3 at SL</b>.</p>
+        <div id="blocks" class="left"></div>
+        <p class="va-note"><b>About Visual Arts:</b> you can choose it in Block 4 or Block 5, in place of one science, but only once. Visual Arts has no written exam, so it is not on the exam schedule; the DP Coordinator confirms its exact block each year.</p>
+      </div>
+
+      <aside class="summary" id="my-plan" aria-labelledby="sum-h">
+        <div class="sum-top">
+          <div>
+            <p class="eyebrow">My plan</p>
+            <h3 id="sum-h">Subject choices</h3>
+          </div>
+          <div class="hl-meter"><strong id="hl-count">0/3</strong><span>HL subjects (need 3)</span></div>
+        </div>
+        <div class="name-row">
+          <label for="student-name">Student name (optional)</label>
+          <input type="text" id="student-name" autocomplete="off" placeholder="Type your name">
+        </div>
+        <ul class="plan" id="plan-list"></ul>
+        <p class="core">Plus the Diploma core: Theory of Knowledge, Extended Essay, and CAS.</p>
+        <div>
+          <p class="eyebrow" style="margin-bottom:6px">Groups covered</p>
+          <div class="gchips" id="gchips"></div>
+        </div>
+        <div>
+          <p class="eyebrow" style="margin-bottom:8px">Checks</p>
+          <ul class="checks" id="checks" aria-live="polite"></ul>
+        </div>
+        <div class="btns">
+          <button class="btn" id="copy-btn" type="button">Copy my plan</button>
+          <button class="btn ghost" id="clear-btn" type="button">Start again</button>
+        </div>
+        <textarea id="copy-fallback" hidden readonly aria-label="Your plan as text"></textarea>
+        <p class="sum-foot">Bring your plan to your tutor, the counsellor or the DP Coordinator. University requirements change, so always check each university's website.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="subjects" aria-labelledby="sub-h">
+    <div class="sec-head">
+      <p class="eyebrow">About each subject</p>
+      <h2 id="sub-h">What you study, how it is assessed, where it leads</h2>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter subjects by group"></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="words" aria-labelledby="w-h">
+    <div class="sec-head">
+      <p class="eyebrow">Key words</p>
+      <h2 id="w-h">The IB words families ask about most</h2>
+    </div>
+    <dl class="terms" id="terms"></dl>
+  </section>
+
+  <section id="routes" aria-labelledby="r-h">
+    <div class="sec-head">
+      <p class="eyebrow">Other routes</p>
+      <h2 id="r-h">When the full Diploma is not the right fit</h2>
+    </div>
+    <div class="routes">
+      <div class="route">
+        <h3>IB courses + BMIS High School Diploma</h3>
+        <p>Students can take 5 or 6 IB courses without the full Diploma, alongside the BMIS High School Diploma (HSD). Some subjects have an HSD version, which removes the most demanding 30% of the course and adds a skills-based component.</p>
+        <p class="muted">HSD versions: Business Management, Design Technology, Maths: Applications &amp; Interpretation, Visual Arts, SEHS.</p>
+      </div>
+      <div class="route">
+        <h3>Online subjects (Pamoja)</h3>
+        <p>A subject not taught at school can be studied online through Pamoja, an IB-approved provider. Families pay the course fee.</p>
+        <ul>
+          <li>Economics, Psychology, Digital Society, Philosophy</li>
+          <li>Film</li>
+          <li>Maths: Applications &amp; Interpretation HL</li>
+          <li>French ab initio, Mandarin ab initio</li>
+        </ul>
+        <p class="muted">As listed in the 2025–26 High School Pathways Handbook.</p>
+      </div>
+      <div class="route">
+        <h3>Your home language</h3>
+        <p>Students with a strong home language other than English can study it as a school-supported self-taught Literature SL course in Group 1.</p>
+      </div>
+      <div class="route">
+        <h3>Will every subject run?</h3>
+        <p>Some subjects may not run if very few students choose them. The school confirms the final list after students hand in their choices.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Sources: BMIS High School Pathways Handbook 2025–26 (subject list, online options, HSD); November 2026 Grade 11 &amp; 12 exam schedule (option blocks). University requirements shown are typical examples only.</p>
+    <p>Prepared by K.M. Boopathy. Questions about your plan? Speak to your tutor, the counsellor or the DP Coordinator.</p>
+  </div>
+</footer>
+
+<div class="mbar" aria-hidden="false">
+  <span id="mbar-status">0/6 chosen · 0 HL</span>
+  <a class="btn small" href="#my-plan">See my plan</a>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+var GROUPS = {
+  1:{name:"Language A", long:"Studies in language and literature"},
+  2:{name:"Language acquisition", long:"Learning another language"},
+  3:{name:"Individuals & societies", long:"People, organisations and the world"},
+  4:{name:"Sciences", long:"Experimental sciences and design"},
+  5:{name:"Mathematics", long:"Mathematics"},
+  6:{name:"The arts", long:"Arts (or a second science)"}
+};
+
+var SCI_ASSESS = "Written exams + a scientific investigation (IA) + a collaborative sciences project.";
+var LANGA_ASSESS = "Written exams (literary analysis and a comparative essay) + an individual oral. HL students also write an essay.";
+var LANGB_ASSESS = "Written exams in reading, listening and writing + an individual oral.";
+
+var SUBJECTS = {
+  "english-lit":{name:"English A: Literature", short:"English Literature", group:1, blocks:["b1"], levels:["HL","SL"],
+    what:"Read and discuss novels, poems and plays from different times and cultures, and write about how writers create meaning.",
+    assess:LANGA_ASSESS, good:"Law, journalism, teaching, humanities, and any degree that needs strong writing."},
+  "english-langlit":{name:"English A: Language & Literature", short:"English Lang & Lit", group:1, blocks:["b1"], levels:["HL","SL"],
+    what:"Study literature plus everyday texts such as adverts, speeches, articles and social media, and how language shapes opinion.",
+    assess:LANGA_ASSESS, good:"Media, communication, marketing, law and business."},
+  "spanish-b":{name:"Spanish B", short:"Spanish B", group:2, blocks:["b2"], levels:["HL","SL"],
+    what:"Build fluent Spanish for real situations: read, listen, write and speak about culture and global themes.",
+    assess:LANGB_ASSESS, good:"International careers, tourism, diplomacy and languages.",
+    flag:"For students who have already studied Spanish, usually for 2 to 5 years."},
+  "french-b":{name:"French B", short:"French B", group:2, blocks:["b2"], levels:["HL","SL"],
+    what:"Build fluent French for real situations: read, listen, write and speak about culture and global themes.",
+    assess:LANGB_ASSESS, good:"International careers, diplomacy, development work and languages.",
+    flag:"For students who have already studied French, usually for 2 to 5 years."},
+  "spanish-ab":{name:"Spanish ab initio", short:"Spanish ab initio", group:2, blocks:["b2"], levels:["SL"],
+    what:"Learn Spanish from the beginning: everyday language for travel, school, family and work.",
+    assess:LANGB_ASSESS, good:"Any pathway; a new language is valued by universities and employers.",
+    flag:"For beginners with little or no Spanish. SL only."},
+  "business":{name:"Business Management", short:"Business Management", group:3, blocks:["b3"], levels:["HL","SL"],
+    what:"Learn how organisations work: marketing, finance, people and operations, using real case studies.",
+    assess:"Written exams, including a case study + a business research project (IA). HL has an extra paper.",
+    good:"Business, management, entrepreneurship, marketing, hospitality and economics."},
+  "global-politics":{name:"Global Politics", short:"Global Politics", group:3, blocks:["b3"], levels:["HL","SL"],
+    what:"Explore power, rights, peace, conflict and development through real political issues, locally and globally.",
+    assess:"Written exams + an engagement project on a political issue you have been involved with (IA). HL studies extra global challenges.",
+    good:"Law, international relations, politics, journalism and development work."},
+  "ess":{name:"Environmental Systems & Societies (ESS)", short:"ESS", group:3, blocks:["b3"], levels:["HL","SL"], both:true,
+    what:"Study how nature and people affect each other: ecosystems, biodiversity, water, climate change and sustainability.",
+    assess:"Written exams + an individual investigation (IA). HL adds environmental law, economics and ethics.",
+    good:"Environmental science, geography, sustainability, agriculture and environmental policy.",
+    flag:"Counts as Group 3, Group 4, or both. Not usually accepted as the science for medicine or engineering."},
+  "biology":{name:"Biology", short:"Biology", group:4, blocks:["b4"], levels:["HL","SL"],
+    what:"Study living things from cells and genes to whole ecosystems, with plenty of lab work.",
+    assess:SCI_ASSESS, good:"Medicine, pharmacy, nursing, physiotherapy, veterinary science, biotechnology and psychology."},
+  "physics":{name:"Physics", short:"Physics", group:4, blocks:["b4"], levels:["HL","SL"],
+    what:"Explain the universe with maths: motion, forces, energy, electricity, waves and the atom.",
+    assess:SCI_ASSESS, good:"Engineering, physics, architecture, computer science and astronomy."},
+  "design-tech":{name:"Design Technology", short:"Design Technology", group:4, blocks:["b4"], levels:["HL","SL"],
+    what:"Design solutions to real problems: research users, sketch, model, test and improve products.",
+    assess:"Written exams + a design project (IA).", good:"Product design, engineering, architecture and industrial design."},
+  "chemistry":{name:"Chemistry", short:"Chemistry", group:4, blocks:["b5"], levels:["HL","SL"],
+    what:"Learn how substances are built and how they react: structure, bonding, reactions and energy, with practical lab work.",
+    assess:SCI_ASSESS, good:"Medicine, pharmacy, dentistry, veterinary science, chemical engineering and materials science."},
+  "sehs":{name:"Sports, Exercise & Health Science (SEHS)", short:"SEHS", group:4, blocks:["b5"], levels:["HL","SL"],
+    what:"The science of the body in sport and exercise: anatomy, physiology, biomechanics, nutrition and training.",
+    assess:SCI_ASSESS, good:"Sport science, physiotherapy, nutrition, PE teaching and coaching.",
+    flag:"Not usually accepted in place of Biology or Chemistry for medicine."},
+  "maths-aa":{name:"Mathematics: Analysis & Approaches", short:"Maths AA", group:5, blocks:["b6"], levels:["HL","SL"],
+    what:"Algebra, functions, calculus and proof. The more abstract of the two maths courses.",
+    assess:"Written exams + a maths exploration (IA). HL has an extra problem-solving paper.",
+    good:"Engineering, physics, mathematics, computer science and economics."},
+  "maths-ai":{name:"Mathematics: Applications & Interpretation", short:"Maths AI", group:5, blocks:["b6"], levels:["SL"],
+    what:"Statistics, modelling and using technology to solve real-world problems.",
+    assess:"Written exams + a maths exploration (IA).",
+    good:"Business, biology, psychology, social sciences and design.",
+    flag:"SL only at school. AI HL is available online through Pamoja."},
+  "visual-arts":{name:"Visual Arts", short:"Visual Arts", group:6, blocks:["b4","b5"], levels:["HL","SL"],
+    what:"Make art, research artists and cultures, and build an exhibition of your own work.",
+    assess:"No written exam: assessed through a portfolio, written studies and an exhibition.",
+    good:"Art and design, architecture, media, fashion and animation."}
+};
+
+var BLOCKS = [
+  {id:"b1", n:1, title:"Language A", groups:"Group 1", subjects:["english-lit","english-langlit"]},
+  {id:"b2", n:2, title:"Language acquisition", groups:"Group 2", subjects:["spanish-b","french-b","spanish-ab"]},
+  {id:"b3", n:3, title:"Individuals & societies", groups:"Group 3", subjects:["business","global-politics","ess"]},
+  {id:"b4", n:4, title:"Science 1", groups:"Group 4, or Visual Arts instead", subjects:["biology","physics","design-tech","visual-arts"]},
+  {id:"b5", n:5, title:"Science 2", groups:"Group 4, or Visual Arts instead", subjects:["chemistry","sehs","visual-arts"]},
+  {id:"b6", n:6, title:"Mathematics", groups:"Group 5", subjects:["maths-aa","maths-ai"]}
+];
+
+var HINTS = {
+  "english-lit":"Mainly novels, poems and plays.",
+  "english-langlit":"Literature plus media and everyday texts.",
+  "spanish-b":"For students who have already studied Spanish.",
+  "french-b":"For students who have already studied French.",
+  "spanish-ab":"For complete beginners in Spanish.",
+  "business":"How companies and organisations work.",
+  "global-politics":"Power, rights, conflict and peace.",
+  "ess":"Environment and sustainability. Also counts as a science.",
+  "biology":"Living things, cells and the human body.",
+  "physics":"Forces, energy and the universe. Uses a lot of maths.",
+  "design-tech":"Designing, making and testing products.",
+  "chemistry":"Substances and reactions. Needed for medicine.",
+  "sehs":"The science of sport, exercise and the body.",
+  "maths-aa":"More algebra and calculus. For engineering, sciences and economics.",
+  "maths-ai":"More statistics and real-life problems.",
+  "visual-arts":"Choose it here instead of a science (only once)."
+};
+Object.keys(HINTS).forEach(function(k){ SUBJECTS[k].hint = HINTS[k]; });
+
+function R(ids, level, label){ return {ids:ids, level:level||null, label:label}; }
+function EX(a){ return {b1:a[0], b2:a[1], b3:a[2], b4:a[3], b5:a[4], b6:a[5]}; }
+
+var GOALS = {
+  medicine:{name:"Medicine, dentistry & pharmacy",
+    blurb:"Most medical schools ask for Chemistry at HL, and usually Biology at HL too.",
+    req:[R(["chemistry"],"HL","Chemistry at HL"), R(["biology"],"HL","Biology at HL")],
+    help:[R(["maths-aa"],null,"Maths: Analysis & Approaches")],
+    note:"SEHS and ESS are not usually accepted in place of Biology or Chemistry.",
+    ex:EX([["english-langlit","HL"],["spanish-b","SL"],["global-politics","SL"],["biology","HL"],["chemistry","HL"],["maths-aa","SL"]]),
+    why:"Biology and Chemistry are both at HL, and they sit in different blocks, so they never clash. English HL is the third HL. Maths AA SL keeps universities that ask for it open."},
+  engineering:{name:"Engineering",
+    blurb:"Engineering courses usually ask for Maths: Analysis & Approaches and Physics, both at HL.",
+    req:[R(["maths-aa"],"HL","Maths AA at HL"), R(["physics"],"HL","Physics at HL")],
+    help:[R(["chemistry"],null,"Chemistry (for chemical or materials engineering)")],
+    note:"Maths AI is not usually accepted for engineering.",
+    ex:EX([["english-langlit","SL"],["french-b","SL"],["ess","SL"],["physics","HL"],["chemistry","HL"],["maths-aa","HL"]]),
+    why:"Maths AA and Physics at HL are what most engineering courses ask for. Chemistry HL is the third HL and keeps chemical and materials engineering open."},
+  computing:{name:"Computer science & data",
+    blurb:"Computing and data degrees usually ask for Maths: Analysis & Approaches at HL.",
+    req:[R(["maths-aa"],"HL","Maths AA at HL")],
+    help:[R(["physics"],null,"Physics")],
+    note:"Computer Science is not taught at BMIS, and universities do not expect it. Strong maths matters most.",
+    ex:EX([["english-langlit","SL"],["spanish-b","SL"],["business","HL"],["physics","HL"],["chemistry","SL"],["maths-aa","HL"]]),
+    why:"Maths AA HL and Physics HL build the problem-solving that computing degrees look for. Business HL adds a third HL with a practical side."},
+  business:{name:"Business, economics & finance",
+    blurb:"Business degrees rarely require specific subjects. Economics and finance often expect Maths AA.",
+    req:[],
+    help:[R(["business"],"HL","Business Management at HL"), R(["maths-aa"],null,"Maths: Analysis & Approaches")],
+    note:"For economics at competitive universities, Maths AA (often at HL) is expected. Economics itself is offered online through Pamoja.",
+    ex:EX([["english-langlit","HL"],["french-b","SL"],["business","HL"],["biology","SL"],["sehs","SL"],["maths-aa","HL"]]),
+    why:"Business HL and Maths AA HL cover both business and economics courses. Biology and SEHS at SL complete the science blocks with a manageable workload."},
+  law:{name:"Law & international relations",
+    blurb:"Law degrees rarely require specific subjects. Strong writing and high grades matter most.",
+    req:[],
+    help:[R(["english-lit","english-langlit"],"HL","English at HL"), R(["global-politics"],"HL","Global Politics at HL")],
+    note:"A second language at HL is a strong extra for international relations.",
+    ex:EX([["english-lit","HL"],["french-b","HL"],["global-politics","HL"],["biology","SL"],["sehs","SL"],["maths-ai","SL"]]),
+    why:"English Literature, French B and Global Politics at HL build reading, argument and writing. Two sciences at SL meet the Diploma rules."},
+  architecture:{name:"Architecture & design",
+    blurb:"Many architecture and design courses ask for a portfolio. Some also ask for Maths or Physics.",
+    req:[],
+    help:[R(["visual-arts"],"HL","Visual Arts at HL"), R(["design-tech"],null,"Design Technology"), R(["maths-aa"],null,"Maths: Analysis & Approaches")],
+    note:"Check each course: some architecture degrees ask for Physics or Maths at HL.",
+    ex:EX([["english-langlit","HL"],["spanish-ab","SL"],["ess","SL"],["design-tech","HL"],["visual-arts","HL"],["maths-aa","SL"]]),
+    why:"Design Technology and Visual Arts at HL build a strong portfolio. ESS covers both Group 3 and Group 4, and Maths AA keeps courses that ask for maths open."},
+  environment:{name:"Environmental science & sustainability",
+    blurb:"Science-based environmental degrees usually expect Biology or Chemistry.",
+    req:[R(["biology","chemistry"],null,"Biology or Chemistry")],
+    help:[R(["ess"],"HL","ESS at HL")],
+    note:"ESS counts as Group 3 and Group 4. Pair it with Biology or Chemistry for science-based degrees.",
+    ex:EX([["english-langlit","HL"],["french-b","SL"],["ess","HL"],["biology","HL"],["chemistry","SL"],["maths-ai","SL"]]),
+    why:"ESS and Biology at HL give a strong environmental focus, and Chemistry SL supports science-based degrees."},
+  sport:{name:"Sport science & physiotherapy",
+    blurb:"Physiotherapy courses usually ask for Biology. Sport science courses value SEHS.",
+    req:[R(["biology"],null,"Biology")],
+    help:[R(["sehs"],"HL","SEHS at HL")],
+    note:"Some universities accept SEHS as a second science, but not in place of Biology.",
+    ex:EX([["english-langlit","HL"],["spanish-b","SL"],["business","SL"],["biology","HL"],["sehs","HL"],["maths-ai","SL"]]),
+    why:"Biology and SEHS at HL study the human body from two angles, which suits physiotherapy and sport science."},
+  psychology:{name:"Psychology & social sciences",
+    blurb:"Psychology degrees rarely require specific subjects. Biology and statistics both help.",
+    req:[],
+    help:[R(["biology"],null,"Biology"), R(["maths-aa","maths-ai"],null,"Maths (either course)")],
+    note:"Psychology is offered online through Pamoja (family cost).",
+    ex:EX([["english-lit","HL"],["spanish-b","SL"],["global-politics","HL"],["biology","HL"],["sehs","SL"],["maths-ai","SL"]]),
+    why:"Biology HL supports the brain-and-behaviour side of psychology, and Global Politics HL builds essay skills. Maths AI SL gives useful statistics."},
+  arts:{name:"Arts, media & communication",
+    blurb:"Arts and media courses look most closely at your portfolio and your writing.",
+    req:[],
+    help:[R(["visual-arts"],"HL","Visual Arts at HL"), R(["english-lit","english-langlit"],"HL","English at HL")],
+    note:"Film is offered online through Pamoja.",
+    ex:EX([["english-lit","HL"],["french-b","HL"],["business","SL"],["biology","SL"],["visual-arts","HL"],["maths-ai","SL"]]),
+    why:"Visual Arts HL builds the portfolio, while English Literature and French B at HL show strong communication."}
+};
+
+var TERMS = [
+  ["HL (Higher Level)","Deeper study, about 240 teaching hours over two years. Universities look closely at HL subjects and grades."],
+  ["SL (Standard Level)","About 150 teaching hours over two years. Still a full IB course with exams."],
+  ["Option block","A set of subjects taught at the same time in the timetable. You can take only one subject from each block."],
+  ["Language B","A language course for students who have already studied the language for a few years."],
+  ["Ab initio","Latin for “from the beginning”. A language course for complete beginners. SL only."],
+  ["IA (Internal Assessment)","Coursework done in class, such as a lab investigation or project. Marked by teachers and checked by the IB. Usually 20 to 30% of the subject grade."],
+  ["EE (Extended Essay)","An independent research essay of up to 4,000 words on a topic you choose, with a teacher supervisor."],
+  ["TOK (Theory of Knowledge)","A course about how we know what we know. Assessed by an essay and an exhibition."],
+  ["CAS","Creativity, Activity, Service. Experiences and projects outside the classroom. Required for the Diploma."],
+  ["Points","Each subject is graded 1 to 7. TOK and the EE add up to 3 points. The maximum is 45, and the Diploma needs at least 24 points plus other conditions."],
+  ["Pamoja","An IB-approved provider of online courses, for subjects not taught at school. Families pay the fee."],
+  ["HSD","The BMIS High School Diploma, a school diploma that students can take alongside IB courses."]
+];
+
+var KEY = "bmis-dp-planner-v1";
+var state = {picks:{}, goal:"", name:"", example:""};
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function $(id){ return document.getElementById(id); }
+function gvar(g){ return "var(--g"+g+")"; }
+
+function load(){
+  try{
+    var s = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(s && s.picks){ state.picks = s.picks || {}; state.goal = s.goal || ""; state.name = s.name || ""; state.example = s.example || ""; return true; }
+  }catch(e){}
+  return false;
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+var toastTimer;
+function toast(msg){
+  var t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+
+/* ---------- Overview table ---------- */
+function buildOverview(){
+  var rows = [];
+  for(var g=1; g<=6; g++){
+    var list = Object.keys(SUBJECTS).filter(function(k){ return SUBJECTS[k].group===g; });
+    var names = list.map(function(k){ return esc(SUBJECTS[k].name) + (SUBJECTS[k].both ? "*" : ""); }).join("; ");
+    rows.push('<tr style="--gc:'+gvar(g)+'"><td><span class="gname"><span class="gdot"></span>'+g+' – '+esc(GROUPS[g].name)+'</span></td><td>'+names+'</td><td class="n">'+list.length+'</td></tr>');
+  }
+  $("ov-body").innerHTML = rows.join("");
+}
+
+/* ---------- Goal select ---------- */
+function buildGoals(){
+  var opts = ['<option value="">No goal yet: just exploring</option>'];
+  Object.keys(GOALS).forEach(function(k){ opts.push('<option value="'+k+'">'+esc(GOALS[k].name)+'</option>'); });
+  $("goal").innerHTML = opts.join("");
+}
+
+function exampleChips(ex){
+  return BLOCKS.map(function(b){
+    var p = ex[b.id]; var s = SUBJECTS[p[0]];
+    return '<span class="chip" style="--gc:'+gvar(s.group)+'">'+esc(s.short)+' <b>'+p[1]+'</b></span>';
+  }).join("");
+}
+
+function renderGoal(){
+  var box = $("goal-detail");
+  var g = GOALS[state.goal];
+  if(!g){
+    box.innerHTML = '<p class="muted">Pick a goal to see which subjects universities usually ask for, with a worked example plan you can load and change.</p>';
+    return;
+  }
+  var req = g.req.length ? '<ul>'+g.req.map(function(r){ return '<li>'+esc(r.label)+'</li>'; }).join("")+'</ul>' : '<p>No fixed subjects. Good grades across all six matter most.</p>';
+  var help = g.help.length ? '<ul>'+g.help.map(function(r){ return '<li>'+esc(r.label)+'</li>'; }).join("")+'</ul>' : '<p>Any.</p>';
+  box.innerHTML =
+    '<p>'+esc(g.blurb)+'</p>'+
+    '<div class="goal-detail"><div><h4>Usually required</h4>'+req+'</div><div><h4>Helpful</h4>'+help+'</div></div>'+
+    '<p class="muted">'+esc(g.note)+'</p>'+
+    '<div class="example"><p class="eyebrow">Worked example</p><div class="chips">'+exampleChips(g.ex)+'</div>'+
+    '<p>'+esc(g.why)+'</p><div><button class="btn small" type="button" id="load-ex">Load this example into my plan</button></div></div>';
+  $("load-ex").addEventListener("click", function(){ loadExample(state.goal); toast("Example loaded. Change any subject to make it your own."); });
+}
+
+function loadExample(key){
+  var g = GOALS[key]; if(!g) return;
+  state.picks = {};
+  BLOCKS.forEach(function(b){ var p = g.ex[b.id]; state.picks[b.id] = {id:p[0], level:p[1]}; });
+  state.goal = key; state.example = key;
+  $("goal").value = key;
+  renderGoal(); update();
+}
+
+/* ---------- Blocks ---------- */
+function buildBlocks(){
+  $("blocks").innerHTML = BLOCKS.map(function(b){
+    var opts = b.subjects.map(function(sid){
+      var s = SUBJECTS[sid];
+      var meta = "Group "+s.group+(s.both?" and Group 4":"")+" · "+(s.levels.length===2?"HL or SL":"SL only");
+      return '<label class="opt" id="lbl-'+b.id+'-'+sid+'" style="--gc:'+gvar(s.group)+'">'+
+        '<input type="radio" name="'+b.id+'" id="'+b.id+'-'+sid+'" value="'+sid+'">'+
+        '<span class="dot" aria-hidden="true"></span>'+
+        '<span class="opt-text"><span class="opt-name">'+esc(s.name)+'</span>'+
+        (s.hint ? '<span class="opt-hint">'+esc(s.hint)+'</span>' : '')+
+        '<span class="opt-meta">'+esc(meta)+'</span></span></label>';
+    }).join("");
+    return '<fieldset class="block" id="blk-'+b.id+'">'+
+      '<legend class="block-head"><span class="block-num">Block '+b.n+'</span><span class="block-title">'+esc(b.title)+'</span><span class="block-groups">'+esc(b.groups)+'</span></legend>'+
+      '<div class="opts">'+opts+'</div>'+
+      '<div class="levels"><span class="lv-label" id="lvl-'+b.id+'">Level</span>'+
+      '<span class="seg" role="radiogroup" aria-labelledby="lvl-'+b.id+'">'+
+      '<label id="lab-'+b.id+'-HL"><input type="radio" name="'+b.id+'-level" id="'+b.id+'-HL" value="HL">HL</label>'+
+      '<label id="lab-'+b.id+'-SL"><input type="radio" name="'+b.id+'-level" id="'+b.id+'-SL" value="SL">SL</label>'+
+      '</span><span class="lv-note" id="lvn-'+b.id+'"></span></div>'+
+      '</fieldset>';
+  }).join("");
+
+  $("blocks").addEventListener("change", function(e){
+    var t = e.target; if(t.type!=="radio") return;
+    var m = /^(b\d)(-level)?$/.exec(t.name); if(!m) return;
+    var bid = m[1];
+    if(m[2]){
+      if(state.picks[bid]) state.picks[bid].level = t.value;
+    }else{
+      var s = SUBJECTS[t.value]; var prev = state.picks[bid];
+      var lvl = (prev && s.levels.indexOf(prev.level)>-1) ? prev.level : "SL";
+      state.picks[bid] = {id:t.value, level:lvl};
+    }
+    state.example = "";
+    update();
+  });
+}
+
+function otherVA(bid){
+  var other = bid==="b4" ? "b5" : (bid==="b5" ? "b4" : null);
+  return other && state.picks[other] && state.picks[other].id==="visual-arts";
+}
+
+/* ---------- Checks ---------- */
+function pickOf(ids){
+  for(var i=0;i<BLOCKS.length;i++){ var p = state.picks[BLOCKS[i].id]; if(p && ids.indexOf(p.id)>-1) return p; }
+  return null;
+}
+function reqStatus(r){
+  var p = pickOf(r.ids);
+  if(!p) return "missing";
+  if(r.level && p.level!==r.level) return "level";
+  return "ok";
+}
+function picksList(){ return BLOCKS.map(function(b){ return state.picks[b.id]; }).filter(Boolean); }
+
+function computeChecks(){
+  var picks = picksList(), n = picks.length;
+  var hl = picks.filter(function(p){ return p.level==="HL"; }).length;
+  var out = [];
+  if(n===6) out.push({s:"ok", t:"One subject chosen in every block."});
+  else out.push({s:"todo", t:"Choose a subject in "+(6-n)+" more block"+(6-n===1?"":"s")+"."});
+
+  if(hl===3 && n===6) out.push({s:"ok", t:"3 HL and 3 SL: the standard Diploma pattern."});
+  else if(hl===3) out.push({s:"ok", t:"3 HL chosen. Set the rest at SL."});
+  else if(hl===4) out.push({s:"warn", t:"4 HL is allowed by the IB but is very demanding. It needs school approval."});
+  else if(hl>4) out.push({s:"bad", t:hl+" HL is too many. The Diploma allows 3 or 4 HL subjects."});
+  else if(n===6) out.push({s:"bad", t:"Only "+hl+" HL. The Diploma needs at least 3 HL subjects."});
+  else out.push({s:"todo", t:hl+" of 3 HL chosen so far."});
+
+  var ids = picks.map(function(p){ return p.id; });
+  var g4 = ids.filter(function(id){ return SUBJECTS[id].group===4; }).length;
+  if(ids.indexOf("ess")>-1) out.push({s:"info", t:"ESS counts as both Group 3 and Group 4."});
+  if(n===6 && ids.indexOf("visual-arts")===-1 && g4>=2) out.push({s:"info", t:"No arts subject: your second science takes the place of Group 6. The IB allows this."});
+  if(ids.indexOf("spanish-ab")>-1) out.push({s:"info", t:"Spanish ab initio is for beginners. Students who already know some Spanish should take Spanish B."});
+  if(ids.indexOf("sehs")>-1 && ids.indexOf("biology")===-1) out.push({s:"info", t:"Many universities do not accept SEHS in place of Biology."});
+
+  var g = GOALS[state.goal];
+  if(g){
+    g.req.forEach(function(r){
+      var st = reqStatus(r);
+      if(st==="ok") out.push({s:"ok", t:g.name+": "+r.label+" ✓"});
+      else if(st==="level") out.push({s:"warn", t:g.name+": "+r.label+" is usually required. You have it at SL."});
+      else out.push({s:"bad", t:g.name+": "+r.label+" is usually required."});
+    });
+    g.help.forEach(function(r){
+      var st = reqStatus(r);
+      if(st==="ok") out.push({s:"ok", t:"Helpful for "+g.name.toLowerCase()+": "+r.label+"."});
+      else out.push({s:"info", t:"Worth considering for "+g.name.toLowerCase()+": "+r.label+"."});
+    });
+    if(state.goal==="engineering" || state.goal==="computing"){
+      if(ids.indexOf("maths-ai")>-1) out.push({s:"bad", t:"Maths AI is not usually accepted for this goal. Choose Maths AA at HL."});
+    }
+  }
+  return {list:out, n:n, hl:hl};
+}
+
+var ICON = {ok:["✓","Done"], warn:["!","Check"], bad:["✕","Problem"], todo:["",""], info:["i","Note"]};
+
+function renderSummary(){
+  var c = computeChecks();
+  $("plan-list").innerHTML = BLOCKS.map(function(b){
+    var p = state.picks[b.id];
+    if(!p) return '<li class="empty"><span class="pb">B'+b.n+'</span><span class="ps">Not chosen yet</span><span></span></li>';
+    var s = SUBJECTS[p.id];
+    return '<li style="--gc:'+gvar(s.group)+'"><span class="pb">B'+b.n+'</span><span class="ps">'+esc(s.name)+'</span><span class="pill '+p.level+'">'+p.level+'</span></li>';
+  }).join("");
+
+  var ids = picksList().map(function(p){ return p.id; });
+  var covered = {};
+  ids.forEach(function(id){ covered[SUBJECTS[id].group] = true; if(SUBJECTS[id].both) covered[4] = true; });
+  var g4count = ids.filter(function(id){ return SUBJECTS[id].group===4; }).length;
+  var chips = [];
+  for(var g=1; g<=6; g++){
+    var cls = covered[g] ? "on" : "";
+    var label = "Group "+g;
+    if(g===6 && !covered[6] && g4count>=2){ cls = "swap"; label = "Group 6: 2nd science"; }
+    chips.push('<span class="gchip '+cls+'" style="--gc:'+gvar(g)+'" title="Group '+g+': '+esc(GROUPS[g].name)+'">'+label+'</span>');
+  }
+  $("gchips").innerHTML = chips.join("");
+
+  $("checks").innerHTML = c.list.map(function(x){
+    var ic = ICON[x.s];
+    return '<li><span class="ic '+x.s+'" aria-hidden="true">'+ic[0]+'</span><span>'+(ic[1]?'<span class="sr">'+ic[1]+': </span>':'<span class="sr">To do: </span>')+esc(x.t)+'</span></li>';
+  }).join("");
+
+  $("hl-count").textContent = c.hl+"/3";
+  $("mbar-status").textContent = c.n+"/6 chosen · "+c.hl+" HL";
+}
+
+/* ---------- Main update ---------- */
+function update(){
+  BLOCKS.forEach(function(b){
+    var p = state.picks[b.id];
+    var fs = $("blk-"+b.id);
+    fs.classList.toggle("is-filled", !!p);
+    fs.style.setProperty("--gc", p ? gvar(SUBJECTS[p.id].group) : "var(--muted)");
+    b.subjects.forEach(function(sid){
+      var inp = $(b.id+"-"+sid), lbl = $("lbl-"+b.id+"-"+sid);
+      var on = !!(p && p.id===sid);
+      var dis = (sid==="visual-arts") && otherVA(b.id);
+      inp.checked = on; inp.disabled = dis;
+      lbl.classList.toggle("is-on", on);
+      lbl.classList.toggle("is-disabled", dis);
+    });
+    var hlIn = $(b.id+"-HL"), slIn = $(b.id+"-SL");
+    var canHL = !!(p && SUBJECTS[p.id].levels.indexOf("HL")>-1);
+    hlIn.disabled = !canHL; slIn.disabled = !p;
+    hlIn.checked = !!(p && p.level==="HL"); slIn.checked = !!(p && p.level==="SL");
+    $("lab-"+b.id+"-HL").classList.toggle("is-on", hlIn.checked);
+    $("lab-"+b.id+"-SL").classList.toggle("is-on", slIn.checked);
+    $("lab-"+b.id+"-HL").classList.toggle("is-disabled", hlIn.disabled);
+    $("lab-"+b.id+"-SL").classList.toggle("is-disabled", slIn.disabled);
+    var note = "";
+    if(!p) note = "Choose a subject first.";
+    else if(!canHL) note = p.id==="maths-ai" ? "SL only at school (HL online)." : "SL only.";
+    $("lvn-"+b.id).textContent = note;
+  });
+  var bn = $("banner");
+  if(state.example && GOALS[state.example]){
+    bn.hidden = false;
+    $("banner-text").textContent = "Worked example loaded: "+GOALS[state.example].name+". Change any subject to make it your own.";
+  }else bn.hidden = true;
+  renderSummary();
+  save();
+}
+
+/* ---------- Copy ---------- */
+function planText(){
+  var c = computeChecks();
+  var lines = ["My IB Diploma subject plan (draft)"];
+  if(state.name.trim()) lines.push("Student: "+state.name.trim());
+  if(GOALS[state.goal]) lines.push("Goal: "+GOALS[state.goal].name);
+  lines.push("");
+  BLOCKS.forEach(function(b){
+    var p = state.picks[b.id];
+    lines.push("Block "+b.n+" ("+b.title+"): "+(p ? SUBJECTS[p.id].name+" "+p.level : "not chosen yet"));
+  });
+  lines.push("Core: Theory of Knowledge, Extended Essay, CAS");
+  lines.push("HL subjects: "+c.hl);
+  lines.push("");
+  lines.push("Checks:");
+  c.list.forEach(function(x){ lines.push("- "+x.t); });
+  lines.push("");
+  lines.push("Made with the DP Subject Planner. Final choices are agreed with the DP Coordinator.");
+  return lines.join("\n");
+}
+function showFallback(text){
+  var ta = $("copy-fallback"); ta.hidden = false; ta.value = text; ta.focus(); ta.select();
+  toast("Select all and copy the text below.");
+}
+
+/* ---------- Subject cards ---------- */
+var currentFilter = "all";
+function buildFilters(){
+  var btns = ['<button class="fbtn" type="button" data-f="all" aria-pressed="true">All 16</button>'];
+  for(var g=1; g<=6; g++) btns.push('<button class="fbtn" type="button" data-f="'+g+'" aria-pressed="false">Group '+g+'</button>');
+  $("filters").innerHTML = btns.join("");
+  $("filters").addEventListener("click", function(e){
+    var b = e.target.closest(".fbtn"); if(!b) return;
+    currentFilter = b.getAttribute("data-f");
+    Array.prototype.forEach.call(document.querySelectorAll(".fbtn"), function(x){ x.setAttribute("aria-pressed", x===b ? "true":"false"); });
+    buildCards();
+  });
+}
+function blockLabel(s){ return s.blocks.length>1 ? "Block 4 or 5" : "Block "+s.blocks[0].slice(1); }
+function buildCards(){
+  var keys = Object.keys(SUBJECTS).filter(function(k){
+    var s = SUBJECTS[k];
+    if(currentFilter==="all") return true;
+    var f = +currentFilter;
+    return s.group===f || (s.both && f===4);
+  });
+  $("cards").innerHTML = keys.map(function(k){
+    var s = SUBJECTS[k];
+    var gl = "Group "+s.group+(s.both?" + 4":"");
+    return '<article class="card" style="--gc:'+gvar(s.group)+'">'+
+      '<div class="tags"><span class="tag">'+gl+'</span><span class="tag plain">'+blockLabel(s)+'</span><span class="tag plain">'+(s.levels.length===2?"HL / SL":"SL only")+'</span></div>'+
+      '<h3>'+esc(s.name)+'</h3>'+
+      '<p>'+esc(s.what)+'</p>'+
+      '<dl><div><dt>How it is assessed</dt><dd>'+esc(s.assess)+'</dd></div><div><dt>Leads to</dt><dd>'+esc(s.good)+'</dd></div></dl>'+
+      (s.flag ? '<p class="flag">'+esc(s.flag)+'</p>' : '')+
+      '<button class="btn small" type="button" data-add="'+k+'">Add to my plan</button>'+
+      '</article>';
+  }).join("");
+}
+function addSubject(sid){
+  var s = SUBJECTS[sid], bid;
+  if(sid==="visual-arts"){
+    if(state.picks.b4 && state.picks.b4.id==="visual-arts") bid = "b4";
+    else if(state.picks.b5 && state.picks.b5.id==="visual-arts") bid = "b5";
+    else if(!state.picks.b5) bid = "b5";
+    else if(!state.picks.b4) bid = "b4";
+    else bid = "b5";
+  }else bid = s.blocks[0];
+  var prev = state.picks[bid];
+  var b = BLOCKS.filter(function(x){ return x.id===bid; })[0];
+  if(prev && prev.id===sid){ toast(s.short+" is already in Block "+b.n+"."); return; }
+  var lvl = (prev && s.levels.indexOf(prev.level)>-1) ? prev.level : "SL";
+  state.picks[bid] = {id:sid, level:lvl};
+  state.example = "";
+  update();
+  toast(s.short+" added to Block "+b.n+(prev ? ", replacing "+SUBJECTS[prev.id].short : "")+".");
+}
+
+/* ---------- Terms ---------- */
+function buildTerms(){
+  $("terms").innerHTML = TERMS.map(function(t){ return '<div class="term"><dt>'+esc(t[0])+'</dt><dd>'+esc(t[1])+'</dd></div>'; }).join("");
+}
+
+/* ---------- Init ---------- */
+function init(){
+  buildOverview(); buildGoals(); buildBlocks(); buildFilters(); buildCards(); buildTerms();
+  load();
+  $("goal").value = state.goal || "";
+  $("student-name").value = state.name || "";
+  renderGoal(); update();
+
+  $("goal").addEventListener("change", function(){ state.goal = this.value; renderGoal(); update(); });
+  $("student-name").addEventListener("input", function(){ state.name = this.value; save(); });
+  $("cards").addEventListener("click", function(e){ var b = e.target.closest("[data-add]"); if(b) addSubject(b.getAttribute("data-add")); });
+  function clearAll(){ state.picks = {}; state.example = ""; $("copy-fallback").hidden = true; update(); toast("Plan cleared. Pick one subject in each block."); }
+  $("clear-btn").addEventListener("click", clearAll);
+  $("clear-btn2").addEventListener("click", clearAll);
+  $("copy-btn").addEventListener("click", function(){
+    var text = planText();
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ toast("Plan copied. Paste it into an email or message."); }, function(){ showFallback(text); });
+      }else showFallback(text);
+    }catch(e){ showFallback(text); }
+  });
+}
+init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Cheiro Numerology Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a counsellor's desk. One input bar on top, then the reading flows top to bottom:
+   core numbers -> name -> gems -> year -> counselling notes -> reference sheets.
+   Each number's gem colour tints its own tile; the birth-number gem tints the page accent. */
+:root{
+  --bg:#F3F4F8; --surface:#FFFFFF; --sunk:#EBEDF3; --ink:#1C2033; --muted:#596079; --line:#D9DCE6;
+  --good:#1E7A4F; --mixed:#8A6A00; --care:#B23A3A;
+  --g1:#B3123B; --g2:#6E7588; --g3:#9A7300; --g4:#B0561C; --g5:#0B7A55; --g6:#3B6A9C; --g7:#75661B; --g8:#2443A8; --g9:#C9442B;
+  --accent:var(--g8);
+  --f-display:"Marcellus", "Palatino Linotype", Palatino, Georgia, serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11131B; --surface:#1A1D28; --sunk:#232736; --ink:#E8E9F1; --muted:#A3A8BD; --line:#2E3244;
+    --good:#5CCB95; --mixed:#E3BE4F; --care:#F08A8A;
+    --g1:#F0627F; --g2:#C3C8D6; --g3:#E5BE47; --g4:#E8995C; --g5:#45C693; --g6:#9CC2EA; --g7:#CDBB63; --g8:#869FF2; --g9:#F48A70;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11131B; --surface:#1A1D28; --sunk:#232736; --ink:#E8E9F1; --muted:#A3A8BD; --line:#2E3244;
+  --good:#5CCB95; --mixed:#E3BE4F; --care:#F08A8A;
+  --g1:#F0627F; --g2:#C3C8D6; --g3:#E5BE47; --g4:#E8995C; --g5:#45C693; --g6:#9CC2EA; --g7:#CDBB63; --g8:#869FF2; --g9:#F48A70;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:16px; line-height:1.55}
+.wrap{max-width:1120px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:28px 56px; display:flex; flex-direction:column; gap:28px}
+h1,h2,h3{font-family:var(--f-display); font-weight:400; text-wrap:balance; margin:0; line-height:1.15}
+h1{font-size:clamp(30px, 4.4vw, 44px); letter-spacing:.01em}
+h2{font-size:clamp(23px, 2.8vw, 29px)}
+h3{font-size:19px}
+p{margin:0}
+.lede{color:var(--muted); max-width:66ch; margin-top:8px; font-size:17px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.mono{font-family:var(--f-mono); font-size:14px; font-variant-numeric:tabular-nums}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:20px}
+section > .head{display:flex; flex-direction:column; gap:4px; margin-bottom:14px}
+section > .head p{color:var(--muted); max-width:70ch}
+
+/* Inputs */
+.inputs{display:flex; flex-direction:column; gap:16px; border-top:4px solid var(--accent)}
+.fields{display:grid; grid-template-columns:minmax(220px, 2fr) minmax(250px, 2fr) minmax(110px, .8fr); gap:14px}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field label, .field .lab{font-size:13px; font-weight:600; color:var(--muted)}
+.dob{display:grid; grid-template-columns:70px 1fr 92px; gap:8px}
+input, select, button{font:inherit; color:inherit}
+input[type=text], input[type=number], select, textarea{width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:16px; min-width:0}
+textarea{font-family:var(--f-body); resize:vertical; min-height:86px}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; background:var(--bg); flex-wrap:wrap}
+.seg input{position:absolute; opacity:0; pointer-events:none}
+.seg label{padding:6px 14px; border-radius:999px; cursor:pointer; font-size:14px; color:var(--muted)}
+.seg input:checked + label{background:var(--surface); color:var(--ink); box-shadow:0 0 0 1px var(--line); font-weight:600}
+.seg input:focus-visible + label{outline:3px solid var(--accent); outline-offset:1px}
+.btn{border:1px solid var(--line); background:var(--surface); border-radius:8px; padding:9px 16px; cursor:pointer; font-weight:600; font-size:15px}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--bg)}
+.btn:hover{border-color:var(--accent)}
+.hint{font-size:13px; color:var(--muted)}
+.err{color:var(--care); font-weight:600}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{display:inline-flex; align-items:center; border:1px solid var(--line); border-radius:999px; background:var(--bg); font-size:14px}
+.chip button{background:none; border:0; cursor:pointer; padding:5px 4px 5px 12px}
+.chip button.x{padding:5px 10px 5px 4px; color:var(--muted)}
+.badge{display:inline-block; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:999px; border:1px solid currentColor}
+.badge.ex{color:var(--mixed)}
+
+.jump{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:15px}
+.jump a{color:var(--muted); text-decoration:none; border-bottom:1px solid transparent}
+.jump a:hover{color:var(--ink); border-color:var(--accent)}
+
+/* Core number tiles */
+.tiles{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px}
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; display:flex; flex-direction:column; gap:8px; min-width:0}
+.tile .top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px}
+.numeral{font-family:var(--f-display); font-size:clamp(58px, 8vw, 84px); line-height:.9; color:var(--c)}
+.numeral small{font-size:.38em; color:var(--muted); margin-left:6px}
+.planet{display:flex; align-items:center; gap:8px; font-weight:600}
+.stone{width:14px; height:14px; border-radius:50%; background:var(--c); box-shadow:inset -3px -3px 0 rgba(0,0,0,.18), inset 2px 2px 0 rgba(255,255,255,.35); flex:none}
+.work{background:var(--sunk); border-radius:8px; padding:8px 10px; overflow-x:auto; white-space:nowrap}
+.tile p.what{color:var(--muted); font-size:15px}
+
+.grid2{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:20px; align-items:start}
+.stack{display:flex; flex-direction:column; gap:14px}
+
+/* Name breakdown */
+.words{display:flex; flex-wrap:wrap; gap:10px}
+.word{border:1px solid var(--line); border-radius:8px; padding:8px 10px; background:var(--bg)}
+.letters{display:flex; gap:3px; flex-wrap:wrap}
+.lt{display:flex; flex-direction:column; align-items:center; min-width:22px}
+.lt b{font-family:var(--f-display); font-weight:400; font-size:19px}
+.lt span{font-family:var(--f-mono); font-size:12px; color:var(--muted)}
+.wsum{font-family:var(--f-mono); font-size:13px; color:var(--muted); margin-top:4px}
+.verdict{display:flex; gap:12px; align-items:flex-start; padding:14px; border-radius:8px; background:var(--sunk)}
+.pill{display:inline-block; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:700; white-space:nowrap}
+.pill.good{color:var(--good); background:color-mix(in srgb, var(--good) 14%, transparent)}
+.pill.mixed{color:var(--mixed); background:color-mix(in srgb, var(--mixed) 16%, transparent)}
+.pill.care{color:var(--care); background:color-mix(in srgb, var(--care) 14%, transparent)}
+.pill.plain{color:var(--muted); background:var(--sunk)}
+dl.kv{display:grid; grid-template-columns:max-content 1fr; gap:6px 14px; margin:0}
+dl.kv dt{color:var(--muted); font-size:14px}
+dl.kv dd{margin:0; font-weight:600}
+.tbl{overflow-x:auto; border:1px solid var(--line); border-radius:8px}
+table{border-collapse:collapse; width:100%; font-size:15px}
+th, td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+thead th{font-size:13px; color:var(--muted); font-weight:600; background:var(--sunk)}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* Gems */
+.gem{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center}
+.gemstone{width:58px; height:58px; transform:rotate(45deg); border-radius:10px; background:linear-gradient(135deg, color-mix(in srgb, var(--c) 55%, white), var(--c) 55%, color-mix(in srgb, var(--c) 70%, black)); margin:8px}
+.gem h3{margin-bottom:2px}
+
+/* Forecast */
+.years{display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:10px}
+.yr{border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:10px 12px; cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:2px}
+.yr .n{font-family:var(--f-display); font-size:34px; line-height:1; color:var(--c)}
+.yr .y{font-family:var(--f-mono); font-size:13px; color:var(--muted)}
+.yr .p{font-size:14px; font-weight:600}
+.yr[aria-pressed="true"]{border-color:var(--c); box-shadow:0 0 0 2px var(--c) inset}
+.reading{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px}
+ul.clean{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px}
+
+/* Counsel */
+.counsel{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
+.counsel .card{display:flex; flex-direction:column; gap:8px}
+.q{font-style:italic}
+
+/* Sheet */
+.sheet td.hi, .sheet th.hi{background:color-mix(in srgb, var(--accent) 12%, transparent)}
+.sheet th[scope=row]{font-weight:600; white-space:nowrap; color:var(--muted); font-size:14px}
+.chaldean{display:grid; grid-template-columns:repeat(8, minmax(0,1fr)); gap:8px}
+.cell{border:1px solid var(--line); border-radius:8px; padding:10px; text-align:center; background:var(--surface)}
+.cell .n{font-family:var(--f-display); font-size:28px; color:var(--c)}
+.cell .l{font-family:var(--f-mono); font-size:14px; letter-spacing:.08em}
+/* Pythagorean */
+.pyth{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px}
+.pcard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:14px 16px; display:flex; flex-direction:column; gap:6px; min-width:0}
+.pcard .pn{font-family:var(--f-display); font-size:44px; line-height:1; color:var(--accent)}
+.pcard .pn small{font-size:15px; font-family:var(--f-body); color:var(--muted); margin-left:6px}
+.pcard .work{font-size:13px}
+/* Colour remedies */
+.swatches{display:flex; flex-wrap:wrap; gap:10px}
+.sw{display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:4px 12px 4px 4px; background:var(--surface); font-size:14px}
+.sw i{width:24px; height:24px; border-radius:50%; border:1px solid var(--line); display:block; flex:none}
+.sw.avoid{opacity:.8; text-decoration:line-through; text-decoration-color:var(--care)}
+.week{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:8px}
+.wday{border:1px solid var(--line); border-radius:8px; padding:8px; text-align:center; background:var(--surface); display:flex; flex-direction:column; gap:4px; align-items:center; font-size:13px}
+.wday i{width:28px; height:28px; border-radius:50%; border:1px solid var(--line); display:block}
+.wday.fav{border-color:var(--good); box-shadow:0 0 0 1px var(--good) inset}
+.wday b{font-size:14px}
+.future td .sw{padding:2px 10px 2px 2px; font-size:13px}
+.future td .sw i{width:18px; height:18px}
+tr.now td{background:color-mix(in srgb, var(--accent) 10%, transparent)}
+footer{color:var(--muted); font-size:14px; border-top:1px solid var(--line); padding-top:16px; max-width:80ch}
+#about a{color:var(--accent)}
+#about li{max-width:80ch}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+
+@media (max-width: 860px){
+  .fields{grid-template-columns:1fr 1fr}
+  .fields .f-name{grid-column:1 / -1}
+  .grid2, .reading, .counsel{grid-template-columns:minmax(0,1fr)}
+  .tiles{grid-template-columns:minmax(0,1fr)}
+  .pyth{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .week{grid-template-columns:repeat(4, minmax(0,1fr))}
+  .years{grid-template-columns:repeat(3, minmax(0,1fr))}
+  .chaldean{grid-template-columns:repeat(4, minmax(0,1fr))}
+}
+@media (max-width: 480px){
+  .fields{grid-template-columns:1fr}
+  .years{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .pyth{grid-template-columns:minmax(0,1fr)}
+  .fields{grid-template-columns:minmax(0,1fr)}
+  .week{grid-template-columns:repeat(3, minmax(0,1fr))}
+  .dob{grid-template-columns:64px 1fr 84px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .tile, .yr{transition:border-color .2s, box-shadow .2s}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app">
+  <header>
+    <div class="eyebrow">Cheiro method · Pythagorean numbers · Namology · Gems · Colour remedies · Future predictions</div>
+    <h1>Cheiro Numerology Guide</h1>
+    <p class="lede">Enter a name and date of birth. You get the Cheiro and Pythagorean numbers with every step shown, a name check, gems, colour remedies, the yearly forecast for the next nine years, and notes to guide a counselling conversation.</p>
+  </header>
+
+  <section class="card inputs" aria-label="Person details">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="font-size:22px">Person</h2>
+      <span class="badge ex" id="exBadge" hidden>Example person. Type over it.</span>
+    </div>
+    <form id="form" class="fields" novalidate>
+      <div class="field f-name">
+        <label for="name">Name, as most often used</label>
+        <input id="name" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. K.M. Boopathy">
+      </div>
+      <div class="field">
+        <span class="lab" id="dobLab">Date of birth (day / month / year)</span>
+        <div class="dob" role="group" aria-labelledby="dobLab">
+          <select id="dd" aria-label="Day"></select>
+          <select id="mm" aria-label="Month"></select>
+          <input id="yy" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
+        </div>
+      </div>
+      <div class="field">
+        <label for="fy">Forecast year</label>
+        <input id="fy" type="number" inputmode="numeric" min="1900" max="2199">
+      </div>
+    </form>
+    <div class="row" style="justify-content:space-between; row-gap:12px">
+      <div class="row">
+        <span class="lab hint" id="wdLab">Weekday numbers for the yearly forecast</span>
+        <div class="seg" role="radiogroup" aria-labelledby="wdLab">
+          <input type="radio" name="wd" id="wdPlanet" value="planet" checked><label for="wdPlanet">By ruling planet</label>
+          <input type="radio" name="wd" id="wdCount" value="count"><label for="wdCount">Simple count</label>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" type="button" id="saveBtn">Save person</button>
+        <button class="btn primary" type="button" id="copyBtn">Copy summary</button>
+      </div>
+    </div>
+    <p class="hint" id="wdHint"></p>
+    <p class="err" id="err" role="alert" hidden></p>
+    <div class="chips" id="saved" aria-label="Saved people"></div>
+    <p class="hint" id="copyMsg" aria-live="polite"></p>
+  </section>
+
+  <nav class="jump" aria-label="Sections">
+    <a href="#numbers">Cheiro numbers</a><a href="#pythagorean">Pythagorean numbers</a><a href="#namology">Namology</a><a href="#gems">Gems</a><a href="#colours">Colour remedies</a><a href="#forecast">Yearly forecast</a><a href="#future">Future predictions</a><a href="#counsel">Counselling notes</a><a href="#sheet">Number sheet</a><a href="#chart">Letter chart</a><a href="#about">About</a>
+  </nav>
+
+  <section id="numbers">
+    <div class="head"><h2>Core numbers</h2><p>Cheiro reads three numbers together: the birth (psychic) number shows the inner nature, the destiny number shows the direction of life, and the name number shows how others meet the person.</p></div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section id="pythagorean">
+    <div class="head"><h2>Pythagorean numbers</h2><p>The Western method used by most online calculators: A=1 to I=9, repeating. Y counts as a consonant. 11, 22 and 33 are kept as master numbers.</p></div>
+    <div class="pyth" id="pythOut"></div>
+  </section>
+
+  <div class="grid2">
+    <section id="namology" class="card">
+      <div class="head"><h2>Namology</h2><p>Cheiro's letter values (Chaldean). Every letter in the name is counted.</p></div>
+      <div class="stack" id="nameOut"></div>
+      <div class="stack" style="margin-top:18px">
+        <h3>Try other spellings</h3>
+        <label class="hint" for="alts">One spelling per line. Each is checked against the birth and destiny numbers.</label>
+        <textarea id="alts" spellcheck="false"></textarea>
+        <div class="tbl"><table id="altTable"><thead><tr><th>Spelling</th><th>Total</th><th>Number</th><th>With birth no.</th><th>With destiny no.</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="gems" class="card">
+      <div class="head"><h2>Gems</h2><p>From your number sheet. The main gem follows the birth number; the destiny number gives a supporting gem.</p></div>
+      <div class="stack" id="gemOut"></div>
+    </section>
+  </div>
+
+  <section id="colours" class="card">
+    <div class="head"><h2>Colour remedies</h2><p>Colours from your number sheet. Wear or use the lucky colours on important days, lean on the supporting colours, and limit the colours of unfriendly numbers.</p></div>
+    <div class="stack" id="colourOut"></div>
+  </section>
+
+  <section id="forecast">
+    <div class="head"><h2>Yearly forecast</h2><p>The book's method: month of birth + date of birth + last two digits of the year + the number of the weekday the birthday falls on in that year, reduced to one digit.</p></div>
+    <div class="card stack">
+      <div class="years" id="years"></div>
+      <div class="work mono" id="yearWork"></div>
+      <div class="reading" id="yearReading"></div>
+    </div>
+  </section>
+
+  <section id="future">
+    <div class="head"><h2>Future predictions</h2><p>The next nine years, one full cycle, by the book's method, with a colour remedy for each year. Pythagorean personal years are shown alongside for comparison.</p></div>
+    <div class="tbl future"><table id="futureTable"><thead><tr><th>Year</th><th>Age</th><th>Year no.</th><th>Outlook</th><th>Focus</th><th>Colour remedy</th><th>Personal year</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="counsel">
+    <div class="head"><h2>Counselling notes</h2><p>Talking points drawn from the numbers. Use them to open a conversation, then let the person's own interests and goals lead.</p></div>
+    <div class="counsel" id="counselOut"></div>
+  </section>
+
+  <section id="sheet">
+    <div class="head"><h2>Number sheet</h2><p>Your sheet of planetary rulers 1 to 9. The birth-number and destiny-number columns are highlighted.</p></div>
+    <div class="tbl"><table class="sheet" id="sheetTable"></table></div>
+  </section>
+
+  <section id="chart">
+    <div class="head"><h2>Letter chart</h2><p>Cheiro's values. No letter is given 9, which he treated as a number apart.</p></div>
+    <div class="chaldean" id="chaldean"></div>
+  </section>
+
+  <section id="about" class="card">
+    <div class="head"><h2>About this app</h2><p>Numerology is a traditional reading, not a measured test.</p></div>
+    <ul class="clean">
+      <li><strong>Number sheet:</strong> taken from the numerology sheet, with spellings tidied. Saturn (8) is given Saturday, its usual day.</li>
+      <li><strong>Year meanings:</strong> short summaries written for this app from the yearly-forecast method in <em>Numerology: With Tantra, Ayurveda, and Astrology</em> by Harish Johari. They are not copies of the book's text.</li>
+      <li><strong>Colours:</strong> each main colour comes from the number sheet, with one traditional extra shade per number, such as orange next to gold.</li>
+      <li><strong>Weekday numbers:</strong> the forecast numbers each weekday by its ruling planet (Tuesday = Mars = 9) unless you switch to the simple count.</li>
+      <li><strong>Using it with students:</strong> treat the numbers as a way to start a conversation, alongside their interests and results, rather than as the reason for a subject or career choice.</li>
+      <li><strong>Sharing:</strong> the app is private until it is shared from its Share menu. Saved people stay only in this browser.</li>
+      <li><strong>Source:</strong> the Pythagorean numbers follow the method used by <a href="https://numerologycalc.org/" target="_blank" rel="noopener">numerologycalc.org</a>.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- Data ----------
+  var PLANET = {1:"Sun",2:"Moon",3:"Jupiter",4:"Rahu",5:"Mercury",6:"Venus",7:"Ketu",8:"Saturn",9:"Mars"};
+  var PLANET_ALT = {4:"Uranus in Cheiro's books", 7:"Neptune in Cheiro's books"};
+  var CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1,B:2,K:2,R:2,C:3,G:3,L:3,S:3,D:4,M:4,T:4,E:5,H:5,N:5,X:5,U:6,V:6,W:6,O:7,Z:7,F:8,P:8};
+
+  // From the user's Numerology sheet (spellings tidied)
+  var SHEET = {
+    1:{friendly:[2,3,9],enemy:[4,6,8],neutral:[5],exalt:"28",dates:"1, 19, 28",day:"Sunday",gender:"Male",nature:"Purposeful",colour:"Gold",gem:"Ruby",element:"Fire",body:"Bile (Pitta)",psyche:"Ambivert",peak:"22–24",metal:"Gold"},
+    2:{friendly:[1,3],enemy:[5,4],neutral:[6,8,9],exalt:"29",dates:"2, 20, 29",day:"Monday",gender:"Female",nature:"Purposeful",colour:"White",gem:"Pearl",element:"Water",body:"Mucus (Kapha)",psyche:"Ambivert",peak:"22–25",metal:"Silver"},
+    3:{friendly:[1,2,9],enemy:[5,6],neutral:[8,4],exalt:"12",dates:"3, 12, 21, 30",day:"Thursday",gender:"Masculine",nature:"Purposeful",colour:"Yellow",gem:"Yellow Sapphire, Topaz",element:"Ether",body:"Balanced",psyche:"Extrovert",peak:"12–22",metal:"Gold"},
+    4:{friendly:[5,6,8],enemy:[1,2,9],neutral:[3],exalt:"31",dates:"4, 13, 22, 31",day:"Sunday",gender:"Neutral",nature:"Selfish",colour:"Gold",gem:"Hessonite, Carnelian",element:"Fire",body:"Bile (Pitta)",psyche:"Ambivert",peak:"27–41",metal:"Gold"},
+    5:{friendly:[1,4,6],enemy:[2],neutral:[9,3,8],exalt:"23",dates:"5, 14, 23",day:"Wednesday",gender:"Neutral",nature:"Active",colour:"Green",gem:"Emerald",element:"Earth",body:"Balanced",psyche:"Introvert",peak:"25–33",metal:"Gold"},
+    6:{friendly:[4,5,8],enemy:[1,2],neutral:[3,9],exalt:"24",dates:"6, 15, 24",day:"Friday",gender:"Female",nature:"Active",colour:"Silver",gem:"Diamond",element:"Water",body:"Mucus (Kapha)",psyche:"Ambivert",peak:"25–28",metal:"Silver"},
+    7:{friendly:[8,6,5],enemy:[1,2,9],neutral:[3],exalt:"25",dates:"7, 16, 25",day:"Monday",gender:"Neutral",nature:"Active",colour:"White",gem:"Cat's Eye",element:"Water",body:"Mucus (Kapha)",psyche:"Ambivert",peak:"36–42",metal:"White gold"},
+    8:{friendly:[4,5,6],enemy:[1,2,9],neutral:[3],exalt:"26",dates:"8, 17, 26",day:"Saturday",gender:"Neutral",nature:"Inert",colour:"Black",gem:"Blue Sapphire, Amethyst",element:"Air",body:"Air (Vata)",psyche:"Extrovert",peak:"36–42",metal:"Iron"},
+    9:{friendly:[1,2,3],enemy:[5,4],neutral:[6,8],exalt:"27",dates:"9, 18, 27",day:"Tuesday",gender:"Male",nature:"Inert",colour:"Red",gem:"Coral",element:"Fire",body:"Bile (Pitta)",psyche:"Ambivert",peak:"26–33",metal:"Copper"}
+  };
+  var SHEET_ROWS = [["Friendly numbers","friendly"],["Unfriendly numbers","enemy"],["Neutral numbers","neutral"],["Number of exaltation","exalt"],["Favourable dates","dates"],["Day","day"],["Gender","gender"],["Nature","nature"],["Colour","colour"],["Gem","gem"],["Element","element"],["Body chemistry","body"],["Psyche","psyche"],["Age of peak influence","peak"],["Metal","metal"]];
+
+  // Short readings of each planetary number (written for this guide)
+  var TRAITS = {
+    1:{key:"Leader",strengths:"Leadership, independence and the drive to start things.",mindful:"Pride, impatience and wanting to control everything.",prompts:["Where do you most enjoy taking the lead?","What would you like to start this year?"]},
+    2:{key:"Harmoniser",strengths:"Imagination, empathy and working well with others.",mindful:"Over-sensitivity, worry and difficulty deciding.",prompts:["Who do you work best with, and why?","What helps you feel calm before a big decision?"]},
+    3:{key:"Teacher",strengths:"Wisdom, discipline, ambition and a love of learning.",mindful:"Being bossy or fixed in opinions.",prompts:["Which subject do you enjoy explaining to others?","What long-term goal keeps you going?"]},
+    4:{key:"Reformer",strengths:"Original thinking, hard work and solving problems in new ways.",mindful:"Rebelling, feeling misunderstood, sudden changes of direction.",prompts:["Which problems do you like to fix your own way?","Where would a steady routine help you most?"]},
+    5:{key:"Communicator",strengths:"A quick mind, good communication and easy adaptability.",mindful:"Restlessness, scattered focus and nervous energy.",prompts:["Which activities never bore you?","How do you keep track when you have many things going on?"]},
+    6:{key:"Creator",strengths:"Harmony, creativity, taste and care for family and friends.",mindful:"Over-indulgence, avoiding hard conversations, stubbornness.",prompts:["What creative work makes you proud?","How do you balance helping others with your own goals?"]},
+    7:{key:"Seeker",strengths:"Reflection, research, intuition and independent thought.",mindful:"Withdrawing, overthinking and restlessness.",prompts:["What topic could you study in real depth?","When do you need quiet time to think things through?"]},
+    8:{key:"Builder",strengths:"Perseverance, responsibility and success that comes slowly but lasts.",mindful:"Pessimism, overwork and carrying too much alone.",prompts:["Which goal are you willing to work at steadily?","Who can you ask for support when things feel heavy?"]},
+    9:{key:"Warrior",strengths:"Energy, courage, determination and protecting others.",mindful:"Anger, impulsive decisions and needless conflict.",prompts:["Where does your energy help a team most?","What helps you cool down when you are frustrated?"]}
+  };
+
+  // Year numbers 1-9: our short summary of the book's yearly readings
+  var YEARS = {
+    1:{tone:"good",head:"A year of progress",focus:"Encourage new starts and clear plans.",good:["Long-standing problems ease; help comes from seniors and officials","Progress at work or study, especially with planning","An important change for the better; useful new contacts","Good for reading, writing, competitions and creative work"],mind:["Stay organised so the year's chances are not wasted"]},
+    2:{tone:"good",head:"Friendship and home",focus:"Focus on relationships, patience and steady planning.",good:["More personal warmth and new friends who help later","Less worry; feelings and practical sense in balance","Favourable for home, property or a move","Fresh ways of thinking"],mind:["Avoid needless worry and rushing"]},
+    3:{tone:"good",head:"Learning and recognition",focus:"A strong year for study, finishing pending work and building skills.",good:["Knowledge and practical wisdom grow; old projects get finished","New friends; gains and recognition","Good for speakers, writers and teachers","Good for planning, new ventures and promotion"],mind:["Choose words carefully in public","Read contracts and avoid legal disputes","Get to know new friends before trusting them"]},
+    4:{tone:"mixed",head:"Effort brings results",focus:"Hard work pays; keep calm through surprises.",good:["Success after effort; steady through unexpected problems","Income grows and finances settle","Good for home, new ventures, travel and spiritual practice","Favourable for marriage, partnerships and dealings with officials"],mind:["Not a good year for romance"]},
+    5:{tone:"good",head:"Success and wider circles",focus:"Widen networks and communicate with care.",good:["Success and financial stability; more friends","Good for business, partnerships and travel abroad","Good for media, writing and performing","Good for competitions and sensible risks; a memorable year"],mind:["Be careful in speech and when signing deals"]},
+    6:{tone:"good",head:"Family, art and comfort",focus:"Family, creativity and new openings; watch spending.",good:["Family harmony; household worries lift","Good for love, and for starting a family","Good for artists, designers, performers and the beauty trade","Chance of work for those seeking it, a raise or unexpected money"],mind:["Spending on comfort and pleasure can run high"]},
+    7:{tone:"care",head:"A testing year",focus:"Expect slower progress; patience, fewer risks and reflection.",good:["Legal matters can go well","Good for healing, study of inner subjects and quiet research"],mind:["Misunderstandings; more work for less profit","Test friends and helpers; avoid needless arguments","Take fewer risks; be careful in romance","Stay patient and hopeful: the difficulties are a test"]},
+    8:{tone:"mixed",head:"Self-reliance and service",focus:"Build self-reliance; look after health and stress.",good:["Chance to start something new","Good for public service, social work and politics","Success in worldly matters when energy is used creatively","Wins over opposition and in legal matters"],mind:["Health needs care: reduce stress and anxiety","Rely on your own judgement and resources"]},
+    9:{tone:"good",head:"Completion and reward",focus:"Complete goals and compete well; stay humble.",good:["Completion, success and good fortune; wishes fulfilled","A time to get organised; favour from those in authority","Success in competitions; honour from others","Possible unexpected gains"],mind:["Small clashes possible: avoid harsh words with officials","Avoid self-doubt and perfectionism"]}
+  };
+
+  // Cheiro's compound numbers 10-52 (summarised in our own words)
+  var C = {
+    10:["Wheel of Fortune","good","Confidence and self-belief; the name rises with its owner's efforts."],
+    11:["Hidden trials","care","Tests of trust; watch for hidden opposition."],
+    12:["The Sacrifice","care","Tends to carry others' burdens; protect your own plans."],
+    13:["Change","mixed","Upheaval and new beginnings; power that must be used wisely."],
+    14:["Movement","mixed","Business and many contacts; risk from haste and speculation."],
+    15:["The Magician","good","Charm, eloquence and artistic gifts; draws help and gifts from others."],
+    16:["The Shattered Tower","care","Warns of sudden setbacks; plan ahead and avoid overconfidence."],
+    17:["Star of the Magi","good","Peace and rising above difficulties; a lasting good name."],
+    18:["Conflict","care","Struggles, quarrels and deception; needs caution and integrity."],
+    19:["The Sun","good","Success, esteem and honour; among the most favourable."],
+    20:["The Awakening","mixed","A call to a new purpose; strong for ideals, slower for money."],
+    21:["The Crown","good","Advancement and honours after effort."],
+    22:["Illusion","care","False security and poor judgement; listen to wise advice."],
+    23:["Royal Star of the Lion","good","Success in plans, help from superiors and protection."],
+    24:["Help from others","good","Support from people of rank and from loved ones."],
+    25:["Strength through experience","good","Learns from trials; success comes later and lasts."],
+    26:["Warning","care","Losses through poor advice or partnerships; choose associates carefully."],
+    27:["The Sceptre","good","Authority, and rewards from creative and intellectual work."],
+    28:["Contradictions","care","Early promise followed by losses; plan carefully for the future."],
+    29:["Uncertainty","care","Unreliable friends and trials in relationships."],
+    30:["Reflection","mixed","A strong, thoughtful mind; good or not depending on how it is used."],
+    31:["The Recluse","mixed","Self-contained and solitary; fewer worldly gains."],
+    32:["Communication","good","Persuasive and lucky with people; trust your own judgement."],
+    37:["Good partnerships","good","Happy friendships and partnerships in love and work."],
+    43:["Upheaval","care","Strife and failure of plans; a difficult name number."],
+    51:["The Warrior","good","Sudden advancement and strength; beware of rivals."]
+  };
+  var SAME = {33:24,34:25,35:26,36:27,38:29,39:30,40:31,41:32,42:24,44:26,45:27,46:37,47:29,48:30,49:31,50:32,52:43};
+  function compoundInfo(n){ if(!n) return null; var src = C[n] ? n : SAME[n]; if(!src) return null; var c = C[src]; return {n:n, title:c[0], tone:c[1], text:c[2], same: src!==n ? src : null}; }
+
+  // Pythagorean system
+  var PY = {A:1,J:1,S:1,B:2,K:2,T:2,C:3,L:3,U:3,D:4,M:4,V:4,E:5,N:5,W:5,F:6,O:6,X:6,G:7,P:7,Y:7,H:8,Q:8,Z:8,I:9,R:9};
+  var PY_MEAN = {1:"Independent leader who likes to start things.",2:"Peacemaker who works best in partnership.",3:"Creative communicator with a gift for expression.",4:"Builder who brings order and steady effort.",5:"Seeker of freedom, change and new experience.",6:"Nurturer who takes responsibility for home and community.",7:"Thinker drawn to analysis, research and the inner life.",8:"Achiever with a drive for success and authority.",9:"Humanitarian with compassion and a wide vision.",11:"Master number: intuition and inspiration.",22:"Master number: turns big visions into practical results.",33:"Master number: teaching through compassion and service."};
+  var PY_YEAR = {1:"New beginnings",2:"Patience and partnership",3:"Expression and social life",4:"Hard work and foundations",5:"Change and freedom",6:"Family and responsibility",7:"Reflection and study",8:"Achievement and money matters",9:"Completion and letting go"};
+  function reduceMaster(n){ var s=[n]; while(n>9 && n!==11 && n!==22 && n!==33){ n=digitSum(n); s.push(n);} return s; }
+
+  // Colours: first name is from the user's sheet; the extra shade is a traditional companion colour
+  var COL = {
+    1:{name:"Gold",hex:"#D4A017",also:["Orange","#E8892B"]},
+    2:{name:"White",hex:"#FFFFFF",also:["Cream","#F3E9CF"]},
+    3:{name:"Yellow",hex:"#F2C230",also:["Saffron","#F4A63A"]},
+    4:{name:"Gold",hex:"#D4A017",also:["Smoky grey","#7A7F8C"]},
+    5:{name:"Green",hex:"#2E9E5B",also:["Light green","#8FD18F"]},
+    6:{name:"Silver",hex:"#C0C4CC",also:["Light pink","#F4C6D0"]},
+    7:{name:"White",hex:"#FFFFFF",also:["Light grey","#C9CCD3"]},
+    8:{name:"Black",hex:"#1E1E22",also:["Navy","#1F2F5C"]},
+    9:{name:"Red",hex:"#C62828",also:["Coral","#F07B6B"]}
+  };
+  var DAY_PLANET = [1,2,9,5,3,6,8]; // Sunday..Saturday
+
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var WD_PLANET = [1,2,9,5,3,6,8], WD_COUNT = [1,2,3,4,5,6,7];
+  var EXAMPLE = {name:"Anjali Rao", d:14, m:11, y:1995};
+
+  // ---------- Pure helpers ----------
+  function digitSum(n){ return String(n).split("").reduce(function(a,c){return a + (+c);},0); }
+  function reduceSteps(n){ var s=[n]; while(n>9){ n=digitSum(n); s.push(n);} return s; }
+  function last(a){ return a[a.length-1]; }
+  function compoundOf(total){ if(total<10) return null; var c=total; while(c>52) c=digitSum(c); return c>=10 ? c : null; }
+  function nameCalc(raw){
+    var words = raw.toUpperCase().split(/[\s.\-']+/).map(function(w){return w.replace(/[^A-Z]/g,"");}).filter(Boolean);
+    var parts = words.map(function(w){ var letters = w.split("").map(function(ch){return {ch:ch, v:CHALDEAN[ch]};}); return {word:w, letters:letters, total:letters.reduce(function(a,l){return a+l.v;},0)}; });
+    var total = parts.reduce(function(a,p){return a+p.total;},0);
+    return {parts:parts, total:total, steps: total ? reduceSteps(total) : [0], compound: compoundOf(total)};
+  }
+  function isLeap(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+  function validDate(d,m,y){ var dt = new Date(Date.UTC(y,m-1,d)); return dt.getUTCFullYear()===y && dt.getUTCMonth()===m-1 && dt.getUTCDate()===d; }
+  function yearCalc(d,m,Y,mode){
+    var dd=d, moved=false;
+    if(m===2 && d===29 && !isLeap(Y)){ dd=28; moved=true; }
+    var wd = new Date(Date.UTC(Y,m-1,dd)).getUTCDay();
+    var wn = (mode==="count" ? WD_COUNT : WD_PLANET)[wd];
+    var yy = Y % 100;
+    var total = m + d + yy + wn;
+    return {m:m, d:d, yy:yy, wd:wd, wn:wn, total:total, steps:reduceSteps(total), moved:moved, Y:Y};
+  }
+  function relation(p,n){ if(p===n) return "same"; var s=SHEET[p]; if(s.friendly.indexOf(n)>-1) return "friendly"; if(s.neutral.indexOf(n)>-1) return "neutral"; if(s.enemy.indexOf(n)>-1) return "enemy"; return "unlisted"; }
+  var REL = {same:["Same number","good"],friendly:["Friendly","good"],neutral:["Neutral","mixed"],enemy:["Unfriendly","care"],unlisted:["Not in sheet","plain"]};
+  var REL_SCORE = {same:2,friendly:2,neutral:1,unlisted:.5,enemy:0};
+  function nameVerdict(rp, rd, comp){
+    var t = comp ? ({good:1,mixed:0,care:-1})[comp.tone] : 0;
+    var s = REL_SCORE[rp] + REL_SCORE[rd] + t;
+    if(s>=4) return ["Strong match","good"]; if(s>=2.5) return ["Good match","good"]; if(s>=1.5) return ["Workable","mixed"]; return ["Consider a spelling change","care"];
+  }
+  function suggestNumbers(p, dn){
+    var out=[]; for(var n=1;n<=9;n++){ var r=relation(p,n); if((r==="same"||r==="friendly") && relation(dn,n)!=="enemy") out.push(n);} return out;
+  }
+  function goodTotals(single){ var out=[]; for(var t=10;t<=52;t++){ if(last(reduceSteps(t))===single){ var c=compoundInfo(t); if(c && c.tone==="good") out.push(t);} } return out; }
+
+  // expose for a quick self-check
+  window.__num = {nameCalc:nameCalc, yearCalc:yearCalc, reduceSteps:reduceSteps, relation:relation};
+
+  // ---------- DOM ----------
+  var $ = function(id){ return document.getElementById(id); };
+  var el = {name:$("name"), dd:$("dd"), mm:$("mm"), yy:$("yy"), fy:$("fy"), alts:$("alts"), err:$("err")};
+  for(var i=1;i<=31;i++){ var o=document.createElement("option"); o.value=i; o.textContent=i; el.dd.appendChild(o);}
+  MONTHS.forEach(function(mn,i){ var o=document.createElement("option"); o.value=i+1; o.textContent=mn; el.mm.appendChild(o); });
+
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+  function g(n){ return "var(--g"+n+")"; }
+  function pill(r){ var x=REL[r]; return '<span class="pill '+x[1]+'">'+x[0]+'</span>'; }
+  function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function load(k,f){ try{ var v=localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } }
+
+  var state = {mode: load("cng.mode","planet")};
+  if(state.mode==="count") $("wdCount").checked = true;
+
+  function readInputs(){
+    return {name: el.name.value.trim(), d:+el.dd.value, m:+el.mm.value, y:parseInt(el.yy.value,10), Y:parseInt(el.fy.value,10)};
+  }
+  function setInputs(p){ el.name.value=p.name; el.dd.value=p.d; el.mm.value=p.m; el.yy.value=p.y; }
+
+  var lastSummary = "";
+
+  function render(){
+    var v = readInputs();
+    var problems = [];
+    if(!(v.y>=1900 && v.y<=2100)) problems.push("Enter a birth year between 1900 and 2100.");
+    else if(!validDate(v.d,v.m,v.y)) problems.push(MONTHS[v.m-1]+" "+v.y+" has no day "+v.d+". Check the date of birth.");
+    if(!(v.Y>=1900 && v.Y<=2199)) problems.push("Enter a forecast year such as "+(new Date().getFullYear()+1)+".");
+    el.err.hidden = !problems.length; el.err.textContent = problems.join(" ");
+    if(problems.length) return;
+
+    var ex = v.name===EXAMPLE.name && v.d===EXAMPLE.d && v.m===EXAMPLE.m && v.y===EXAMPLE.y;
+    $("exBadge").hidden = !ex;
+
+    // Core numbers
+    var ps = reduceSteps(v.d), P = last(ps);
+    var digits = (String(v.d).padStart(2,"0")+String(v.m).padStart(2,"0")+String(v.y)).split("").map(Number);
+    var dTotal = digits.reduce(function(a,b){return a+b;},0), ds = reduceSteps(dTotal), D = last(ds);
+    var nm = nameCalc(v.name || ""), N = nm.total ? last(nm.steps) : null;
+    var nComp = compoundInfo(nm.compound);
+    document.getElementById("app").style.setProperty("--accent", g(P));
+
+    function tile(label, n, work, what, extra){
+      var alt = PLANET_ALT[n] ? ' <span class="hint">('+PLANET_ALT[n]+')</span>' : "";
+      return '<article class="tile" style="--c:'+g(n||8)+'"><div class="top"><div><div class="eyebrow">'+label+'</div><div class="numeral">'+(n||"–")+(extra||"")+'</div></div>'+
+        (n ? '<div class="planet"><span class="stone"></span>'+PLANET[n]+'</div>' : '')+'</div>'+
+        (n && PLANET_ALT[n] ? '<p>'+alt.replace(/^ /,"")+'</p>' : '')+
+        '<div class="work mono">'+work+'</div><p class="what">'+what+'</p></article>';
+    }
+    var dWork = String(v.d).padStart(2,"0").split("").join("+")+" + "+String(v.m).padStart(2,"0").split("").join("+")+" + "+String(v.y).split("").join("+")+" = "+ds.join(" → ");
+    var nWork = nm.total ? nm.parts.map(function(p){return p.total;}).join(" + ")+" = "+nm.steps.join(" → ") : "Enter a name";
+    $("tiles").innerHTML =
+      tile("Birth number", P, "Day "+v.d+(ps.length>1 ? " → "+ps.slice(1).join(" → ") : ""), N || true ? TRAITS[P].key+": "+TRAITS[P].strengths : "") +
+      tile("Destiny number", D, dWork, TRAITS[D].key+": "+TRAITS[D].strengths) +
+      tile("Name number", N, nWork, N ? (nComp ? "Compound "+nComp.n+", "+nComp.title+". " : "")+TRAITS[N].key+" energy in how others see the person." : "Type the name used most often.", nm.compound ? '<small>'+nm.compound+'</small>' : "");
+
+    // Namology
+    var rp = N ? relation(P,N) : null, rd = N ? relation(D,N) : null;
+    var nameHtml = "";
+    if(N){
+      var vd = nameVerdict(rp, rd, nComp);
+      nameHtml += '<div class="words">'+nm.parts.map(function(p){
+        return '<div class="word"><div class="letters">'+p.letters.map(function(l){return '<div class="lt"><b>'+l.ch+'</b><span>'+l.v+'</span></div>';}).join("")+'</div><div class="wsum">= '+p.total+'</div></div>';
+      }).join("")+'</div>';
+      nameHtml += '<div class="work mono">'+esc(nWork)+'</div>';
+      nameHtml += '<div class="verdict"><div class="stack" style="gap:6px"><div class="row"><strong>'+vd[0]+'</strong><span class="pill '+vd[1]+'">'+(nComp ? "Compound "+nComp.n : "Number "+N)+'</span></div>'+
+        '<dl class="kv"><dt>With birth no. '+P+'</dt><dd>'+pill(rp)+'</dd><dt>With destiny no. '+D+'</dt><dd>'+pill(rd)+'</dd>'+
+        (nComp ? '<dt>Compound '+nComp.n+'</dt><dd><span class="pill '+nComp.tone+'">'+nComp.title+'</span></dd>' : '')+'</dl>'+
+        (nComp ? '<p>'+nComp.text+(nComp.same ? ' <span class="hint">(Cheiro reads '+nComp.n+' like '+nComp.same+'.)</span>' : '')+'</p>' : '')+
+        (nm.total>52 ? '<p class="hint">Totals above 52 are reduced by adding the digits ('+nm.total+' → '+nm.compound+').</p>' : '')+'</div></div>';
+    } else {
+      nameHtml = '<p class="hint">Type a name above to see the letter values.</p>';
+    }
+    var sug = suggestNumbers(P,D);
+    nameHtml += '<div class="stack" style="gap:6px"><h3>Name numbers that suit this person</h3><p>'+(sug.length ? sug.map(function(n){return '<strong>'+n+'</strong> ('+PLANET[n]+')';}).join(", ") : "None of 1 to 9 is friendly with both numbers. Prefer the birth number itself.")+'</p>'+
+      (sug.length ? '<p class="hint">Favourable totals to aim for: '+sug.map(function(n){var t=goodTotals(n); return t.length ? t.join(", ") : null;}).filter(Boolean).join(", ")+'.</p>' : '')+'</div>';
+    $("nameOut").innerHTML = nameHtml;
+
+    // Alternate spellings
+    var rows = el.alts.value.split("\n").map(function(s){return s.trim();}).filter(Boolean).slice(0,20);
+    $("altTable").tBodies[0].innerHTML = rows.length ? rows.map(function(s){
+      var c = nameCalc(s); if(!c.total) return '';
+      var n = last(c.steps), ci = compoundInfo(c.compound);
+      return '<tr><td>'+esc(s)+'</td><td class="num">'+c.total+'</td><td class="num">'+n+(ci ? ' <span class="pill '+ci.tone+'">'+ci.n+' '+ci.title+'</span>' : '')+'</td><td>'+pill(relation(P,n))+'</td><td>'+pill(relation(D,n))+'</td></tr>';
+    }).join("") : '<tr><td colspan="5" class="hint">Add spellings above to compare them.</td></tr>';
+
+    // Gems
+    function gemCard(n, role){
+      var s = SHEET[n];
+      return '<div class="gem" style="--c:'+g(n)+'"><div class="gemstone" aria-hidden="true"></div><div><div class="eyebrow">'+role+'</div><h3>'+s.gem+'</h3><p class="hint">'+PLANET[n]+' · number '+n+'</p></div></div>'+
+        '<dl class="kv"><dt>Set in</dt><dd>'+s.metal+'</dd><dt>Colour</dt><dd>'+s.colour+'</dd><dt>Day to begin</dt><dd>'+s.day+'</dd><dt>Favourable dates</dt><dd>'+s.dates+'</dd><dt>Element</dt><dd>'+s.element+'</dd></dl>';
+    }
+    var gemHtml = gemCard(P, "Main gem · birth number "+P);
+    if(D!==P) gemHtml += '<hr style="border:0;border-top:1px solid var(--line);margin:4px 0">'+gemCard(D, "Supporting gem · destiny number "+D);
+    else gemHtml += '<p class="hint">Birth and destiny numbers are the same, so one gem serves both.</p>';
+    if(relation(P,D)==="enemy") gemHtml += '<p class="hint">Your sheet lists '+D+' as unfriendly to '+P+'. Many readers wear only the main gem in that case.</p>';
+    $("gemOut").innerHTML = gemHtml;
+
+    // Forecast
+    var mode = document.querySelector('input[name=wd]:checked').value;
+    $("wdHint").textContent = mode==="planet" ? "Sunday 1, Monday 2, Tuesday 9, Wednesday 5, Thursday 3, Friday 6, Saturday 8 (the planet that rules each day)." : "Sunday 1, Monday 2, Tuesday 3, Wednesday 4, Thursday 5, Friday 6, Saturday 7.";
+    var yc = yearCalc(v.d, v.m, v.Y, mode), YN = last(yc.steps), YR = YEARS[YN];
+    var strip = "";
+    for(var k=0;k<5;k++){
+      var Y = v.Y + k, c = yearCalc(v.d, v.m, Y, mode), n = last(c.steps);
+      strip += '<button type="button" class="yr" data-year="'+Y+'" aria-pressed="'+(k===0)+'" style="--c:'+g(n)+'"><span class="y">'+Y+'</span><span class="n">'+n+'</span><span class="p">'+PLANET[n]+'</span><span class="hint">'+YEARS[n].head+'</span></button>';
+    }
+    $("years").innerHTML = strip;
+    $("yearWork").textContent = "Month "+yc.m+" + Date "+yc.d+" + Year "+String(yc.yy).padStart(2,"0")+" + "+DAYS[yc.wd]+" "+yc.wn+" = "+yc.steps.join(" → ")+(yc.moved ? "   (29 Feb counted on 28 Feb in "+v.Y+")" : "");
+    $("yearReading").innerHTML =
+      '<div class="stack" style="gap:8px"><div class="row"><h3>'+v.Y+': year '+YN+', ruled by '+PLANET[YN]+'</h3><span class="pill '+YR.tone+'">'+YR.head+'</span></div><p>'+YR.focus+'</p><ul class="clean">'+YR.good.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul></div>'+
+      '<div class="stack" style="gap:8px"><h3>Points to watch</h3><ul class="clean">'+YR.mind.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul>'+
+      '<p class="hint">Birthday in '+v.Y+': '+DAYS[yc.wd]+', '+yc.d+' '+MONTHS[yc.m-1]+'.</p></div>';
+
+    // Pythagorean numbers
+    var L = (v.name||"").toUpperCase().replace(/[^A-Z]/g,"");
+    var vowS="", conS="", all=0, vow=0, con=0;
+    L.split("").forEach(function(ch){ var val=PY[ch]; all+=val; if("AEIOU".indexOf(ch)>-1){vow+=val; vowS+=ch;} else {con+=val; conS+=ch;} });
+    function chain(label, n, steps){ return label+" "+n+(steps.length>1 ? " → "+steps.slice(1).join(" → ") : ""); }
+    var msP=reduceMaster(v.m), dsP=reduceMaster(v.d), ysP=reduceMaster(digitSum(v.y)), lsP=reduceMaster(last(msP)+last(dsP)+last(ysP));
+    var pyM=reduceSteps(v.m), pyD=reduceSteps(v.d), pyYs=reduceSteps(digitSum(v.Y)), pyS=reduceSteps(last(pyM)+last(pyD)+last(pyYs)), PYN=last(pyS);
+    function pcard(role, about, steps, work){
+      var n = last(steps);
+      return '<div class="pcard"><div class="eyebrow">'+role+'</div><div class="pn">'+(L||role==="Life Path"||role==="Birthday"||role==="Personal Year" ? n : "–")+(steps.length>1 && steps[0]>9 ? '<small>from '+steps[0]+'</small>' : '')+'</div><p>'+(PY_MEAN[n]||"")+'</p><p class="hint">'+about+'</p><div class="work mono">'+work+'</div></div>';
+    }
+    var exS=reduceMaster(all), soS=reduceMaster(vow), peS=reduceMaster(con), bdS=reduceMaster(v.d);
+    $("pythOut").innerHTML =
+      pcard("Life Path","The main path and lessons of life.", lsP, chain("Month",v.m,msP)+" + "+chain("Day",v.d,dsP)+" + Year "+v.y+" → "+ysP.join(" → ")+" = "+lsP.join(" → ")) +
+      (L ? pcard("Expression","Natural talents, from every letter of the name.", exS, "All letters = "+exS.join(" → ")) : pcard("Expression","Natural talents, from every letter of the name.", [0], "Enter a name")) +
+      (L ? pcard("Soul Urge","Inner motivation, from the vowels ("+(vowS||"none")+").", soS, "Vowels = "+soS.join(" → ")) : pcard("Soul Urge","Inner motivation, from the vowels.", [0], "Enter a name")) +
+      (L ? pcard("Personality","How others first see the person, from the consonants.", peS, "Consonants = "+peS.join(" → ")) : pcard("Personality","How others first see the person, from the consonants.", [0], "Enter a name")) +
+      pcard("Birthday","A special gift, from the day of birth.", bdS, chain("Day",v.d,bdS)) +
+      '<div class="pcard"><div class="eyebrow">Personal Year '+v.Y+'</div><div class="pn">'+PYN+'</div><p>'+PY_YEAR[PYN]+'</p><p class="hint">The Western year theme. The book\'s year number is in the forecast below.</p><div class="work mono">'+chain("Month",v.m,pyM)+" + "+chain("Day",v.d,pyD)+" + "+v.Y+" → "+pyYs.join(" → ")+" = "+pyS.join(" → ")+'</div></div>';
+
+    // Colour remedies
+    function sw(name, hex, cls){ return '<span class="sw'+(cls?' '+cls:'')+'"><i style="background:'+hex+'"></i>'+name+'</span>'; }
+    var used = {}, lucky=[], support=[], limit=[];
+    function add(arr, name, hex){ if(used[name]) return; used[name]=1; arr.push([name,hex]); }
+    add(lucky, COL[P].name, COL[P].hex); add(lucky, COL[P].also[0], COL[P].also[1]);
+    if(relation(P,D)!=="enemy") add(support, COL[D].name, COL[D].hex);
+    SHEET[P].friendly.forEach(function(n){ add(support, COL[n].name, COL[n].hex); });
+    SHEET[P].enemy.forEach(function(n){ add(limit, COL[n].name, COL[n].hex); });
+    function yearColour(yn){ var r=relation(P,yn); return (r==="same"||r==="friendly") ? COL[yn] : COL[P]; }
+    var yn0 = YN, yrel = relation(P, yn0), yc0 = yearColour(yn0);
+    var yearLine = (yrel==="same"||yrel==="friendly") ?
+      "Year "+yn0+" ("+PLANET[yn0]+") is friendly to birth number "+P+". Use "+COL[yn0].name.toLowerCase()+" for new starts and important days in "+v.Y+"." :
+      (yrel==="enemy" ? "Year "+yn0+" ("+PLANET[yn0]+") is unfriendly to birth number "+P+". Balance it by wearing "+COL[P].name.toLowerCase()+" or a supporting colour on important days, and keep "+COL[yn0].name.toLowerCase()+" to a minimum." :
+      "Year "+yn0+" ("+PLANET[yn0]+") is neutral for birth number "+P+". Keep to "+COL[P].name.toLowerCase()+" for key days; "+COL[yn0].name.toLowerCase()+" is fine in moderation.");
+    var week = DAYS.map(function(dn,i){ var pn=DAY_PLANET[i], r=relation(P,pn), fav=(r==="same"||r==="friendly"); var c=fav?COL[pn]:COL[P];
+      return '<div class="wday'+(fav?' fav':'')+'"><b>'+dn.slice(0,3)+'</b><i style="background:'+c.hex+'"></i><span>'+c.name+'</span><span class="hint">'+(fav?'Good day':PLANET[pn])+'</span></div>'; }).join("");
+    $("colourOut").innerHTML =
+      '<div class="grid2" style="gap:16px"><div class="stack" style="gap:10px"><h3>Lucky colours · birth number '+P+'</h3><div class="swatches">'+lucky.map(function(c){return sw(c[0],c[1]);}).join("")+'</div>'+
+      '<h3>Supporting colours</h3><div class="swatches">'+(support.length?support.map(function(c){return sw(c[0],c[1]);}).join(""):'<span class="hint">None beyond the lucky colours.</span>')+'</div>'+
+      '<h3>Colours to limit</h3><div class="swatches">'+(limit.length?limit.map(function(c){return sw(c[0],c[1],"avoid");}).join(""):'<span class="hint">None.</span>')+'</div></div>'+
+      '<div class="stack" style="gap:10px"><h3>Remedy for '+v.Y+'</h3><div class="verdict"><span class="sw"><i style="background:'+yc0.hex+'"></i>'+yc0.name+'</span><p>'+yearLine+'</p></div>'+
+      '<h3>Colour for each day</h3><div class="week">'+week+'</div><p class="hint">Green outline marks days ruled by the birth number or a friendly number. Other days use the lucky colour.</p></div></div>';
+
+    // Future predictions (9 years)
+    var rowsF = "";
+    for(var j=0;j<9;j++){
+      var YY=v.Y+j, cc=yearCalc(v.d,v.m,YY,mode), nn=last(cc.steps), info=YEARS[nn], ycol=yearColour(nn);
+      var pyy = last(reduceSteps(last(pyM)+last(pyD)+last(reduceSteps(digitSum(YY)))));
+      rowsF += '<tr class="'+(j===0?'now':'')+'"><td class="num">'+YY+'</td><td class="num">'+(YY-v.y)+'</td><td><span class="pill plain" style="color:'+g(nn)+'">'+nn+' · '+PLANET[nn]+'</span></td><td><span class="pill '+info.tone+'">'+info.head+'</span></td><td>'+info.focus+'</td><td>'+sw(ycol.name, ycol.hex)+'</td><td class="num">'+pyy+' <span class="hint">'+PY_YEAR[pyy]+'</span></td></tr>';
+    }
+    $("futureTable").tBodies[0].innerHTML = rowsF;
+
+    // Counselling notes
+    var who = v.name || "This person";
+    var tP = TRAITS[P], tD = TRAITS[D];
+    var notes = [
+      ["Nature (birth number "+P+", "+PLANET[P]+")", '<p><strong>Strengths:</strong> '+tP.strengths+'</p><p><strong>Watch for:</strong> '+tP.mindful+'</p><p class="hint">'+SHEET[P].psyche+', '+SHEET[P].nature.toLowerCase()+'. Peak influence around age '+SHEET[P].peak+'.</p>'],
+      ["Direction (destiny number "+D+", "+PLANET[D]+")", '<p><strong>Life path:</strong> '+tD.strengths+'</p><p><strong>Watch for:</strong> '+tD.mindful+'</p><p class="hint">Birth and destiny numbers are '+REL[relation(P,D)][0].toLowerCase()+' in your sheet.</p>'],
+      ["Focus for "+v.Y+" (year "+YN+")", '<p>'+YR.focus+'</p><p class="hint">'+YR.mind[0]+'.</p>'],
+      ["Questions to ask", '<ul class="clean">'+tP.prompts.concat(tD.prompts.slice(0,1)).map(function(q){return '<li class="q">'+q+'</li>';}).join("")+'</ul>'],
+      ["Name", N ? '<p>Name number '+N+(nComp ? ' (compound '+nComp.n+', '+nComp.title.toLowerCase()+')' : '')+': '+pill(rp)+' with the birth number, '+pill(rd)+' with the destiny number.</p>' : '<p class="hint">Add a name to include the name check.</p>'],
+      ["Practical supports", '<dl class="kv"><dt>Gem</dt><dd>'+SHEET[P].gem+'</dd><dt>Lucky colours</dt><dd>'+lucky.map(function(c){return c[0];}).join(", ")+'</dd><dt>Colours to limit</dt><dd>'+(limit.map(function(c){return c[0];}).join(", ")||"None")+'</dd><dt>'+v.Y+' colour</dt><dd>'+yc0.name+'</dd><dt>Good day</dt><dd>'+SHEET[P].day+'</dd><dt>Good dates</dt><dd>'+SHEET[P].dates+'</dd></dl>']
+    ];
+    $("counselOut").innerHTML = notes.map(function(n){ return '<div class="card"><h3>'+n[0]+'</h3>'+n[1]+'</div>'; }).join("");
+
+    // Sheet table (highlight P, D)
+    var head = '<thead><tr><th></th>'+[1,2,3,4,5,6,7,8,9].map(function(n){ return '<th class="'+((n===P||n===D)?'hi':'')+'"><span class="stone" style="--c:'+g(n)+';display:inline-block;vertical-align:-2px;margin-right:6px"></span>'+n+' '+PLANET[n]+'</th>'; }).join("")+'</tr></thead>';
+    var body = '<tbody>'+SHEET_ROWS.map(function(r){ return '<tr><th scope="row">'+r[0]+'</th>'+[1,2,3,4,5,6,7,8,9].map(function(n){ var val=SHEET[n][r[1]]; if(Array.isArray(val)) val=val.join(", "); return '<td class="'+((n===P||n===D)?'hi':'')+'">'+esc(val)+'</td>'; }).join("")+'</tr>'; }).join("")+'</tbody>';
+    $("sheetTable").innerHTML = head+body;
+
+    // Summary text for copying
+    lastSummary = [
+      who+" — born "+v.d+" "+MONTHS[v.m-1]+" "+v.y,
+      "Birth (psychic) number: "+P+" ("+PLANET[P]+") — "+tP.strengths,
+      "Destiny number: "+D+" ("+PLANET[D]+") — "+tD.strengths,
+      N ? "Name number: "+(nm.compound ? nm.compound+" → " : "")+N+" ("+PLANET[N]+"), "+REL[rp][0].toLowerCase()+" with birth no., "+REL[rd][0].toLowerCase()+" with destiny no." + (nComp ? " Compound: "+nComp.title+"." : "") : "Name number: not entered",
+      "Suitable name numbers: "+(sug.join(", ")||"birth number "+P),
+      "Pythagorean: Life Path "+last(lsP)+(L ? ", Expression "+last(exS)+", Soul Urge "+last(soS)+", Personality "+last(peS) : "")+", Birthday "+last(bdS)+", Personal Year "+v.Y+": "+PYN,
+      "Gem: "+SHEET[P].gem+" in "+SHEET[P].metal+(D!==P ? "; supporting: "+SHEET[D].gem : "")+". Good day "+SHEET[P].day+", dates "+SHEET[P].dates,
+      "Colours: lucky "+lucky.map(function(c){return c[0];}).join(", ")+"; supporting "+(support.map(function(c){return c[0];}).join(", ")||"none")+"; limit "+(limit.map(function(c){return c[0];}).join(", ")||"none")+". "+v.Y+" remedy: "+yearLine,
+      "Next nine years: "+(function(){ var a=[]; for(var j=0;j<9;j++){ var YY=v.Y+j, n=last(yearCalc(v.d,v.m,YY,mode).steps); a.push(YY+": "+n+" ("+YEARS[n].head+")"); } return a.join("; "); })(),
+      v.Y+": year number "+YN+" ("+PLANET[YN]+") — "+YR.head+". "+YR.focus+" ("+(mode==="planet"?"weekday by ruling planet":"weekday by simple count")+": "+yc.m+"+"+yc.d+"+"+String(yc.yy).padStart(2,"0")+"+"+yc.wn+" = "+yc.steps.join(" → ")+")",
+      "Watch for: "+tP.mindful
+    ].join("\n");
+
+    store("cng.last", {name:v.name, d:v.d, m:v.m, y:v.y});
+  }
+
+  // Saved people
+  function renderSaved(){
+    var list = load("cng.people", []);
+    $("saved").innerHTML = list.map(function(p,i){
+      return '<span class="chip"><button type="button" data-load="'+i+'">'+esc(p.name||"(no name)")+' · '+p.d+'/'+p.m+'/'+p.y+'</button><button type="button" class="x" data-del="'+i+'" aria-label="Remove '+esc(p.name)+'">×</button></span>';
+    }).join("");
+  }
+  $("saved").addEventListener("click", function(e){
+    var t = e.target.closest("button"); if(!t) return;
+    var list = load("cng.people", []);
+    if(t.hasAttribute("data-load")){ setInputs(list[+t.getAttribute("data-load")]); render(); }
+    if(t.hasAttribute("data-del")){ list.splice(+t.getAttribute("data-del"),1); store("cng.people", list); renderSaved(); }
+  });
+  $("saveBtn").addEventListener("click", function(){
+    var v = readInputs(); if(!validDate(v.d,v.m,v.y)) return;
+    var list = load("cng.people", []);
+    var idx = list.findIndex(function(p){ return p.name.toLowerCase()===v.name.toLowerCase(); });
+    var rec = {name:v.name, d:v.d, m:v.m, y:v.y};
+    if(idx>-1) list[idx]=rec; else list.unshift(rec);
+    store("cng.people", list.slice(0,40)); renderSaved();
+    $("copyMsg").textContent = "Saved "+(v.name||"person")+" in this browser.";
+  });
+  $("copyBtn").addEventListener("click", function(){
+    var msg = $("copyMsg");
+    try{
+      navigator.clipboard.writeText(lastSummary).then(function(){ msg.textContent = "Summary copied. Paste it into your notes."; }, function(){ fallback(); });
+    }catch(e){ fallback(); }
+    function fallback(){ el.alts.value = el.alts.value; var ta=document.createElement("textarea"); ta.value=lastSummary; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); var ok=false; try{ ok=document.execCommand("copy"); }catch(e){} document.body.removeChild(ta); msg.textContent = ok ? "Summary copied. Paste it into your notes." : "Copy is blocked here. Select the text in the counselling notes instead."; }
+  });
+  $("years").addEventListener("click", function(e){ var b=e.target.closest(".yr"); if(!b) return; el.fy.value=b.getAttribute("data-year"); render(); });
+  document.querySelectorAll('input[name=wd]').forEach(function(r){ r.addEventListener("change", function(){ store("cng.mode", r.value); render(); }); });
+  ["input","change"].forEach(function(ev){ $("form").addEventListener(ev, render); el.alts.addEventListener(ev, render); });
+  $("form").addEventListener("submit", function(e){ e.preventDefault(); });
+
+  // Letter chart
+  var groups = {}; Object.keys(CHALDEAN).forEach(function(ch){ (groups[CHALDEAN[ch]] = groups[CHALDEAN[ch]] || []).push(ch); });
+  $("chaldean").innerHTML = [1,2,3,4,5,6,7,8].map(function(n){ return '<div class="cell" style="--c:'+g(n)+'"><div class="n">'+n+'</div><div class="l">'+groups[n].join(" ")+'</div></div>'; }).join("");
+
+  // Start
+  var start = load("cng.last", null) || EXAMPLE;
+  if(!start || !validDate(+start.d,+start.m,+start.y)) start = EXAMPLE;
+  setInputs(start);
+  el.fy.value = new Date().getFullYear()+1;
+  el.alts.value = load("cng.alts", "");
+  if(start===EXAMPLE && !el.alts.value) el.alts.value = "Anjali R.\nAnjalie Rao";
+  el.alts.addEventListener("change", function(){ store("cng.alts", el.alts.value); });
+  renderSaved();
+  render();
+})();
+</script>
+
+</body>
+</html>

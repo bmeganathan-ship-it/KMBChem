@@ -1,0 +1,782 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Acid-Base Dynamics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: lab-notebook app — sticky toolbar, lesson rail (sidebar on desktop, chips on phone), one lesson per view built from the three UDL principles. Signature: the universal-indicator pH strip. */
+:root{
+  --bg:#f2f5f7; --surface:#ffffff; --sunk:#e8eef2; --ink:#13202a; --muted:#566874; --line:#d3dde4;
+  --accent:#b0216a; --accent-soft:#f9e3ee; --teal:#0d6f78; --teal-soft:#dff1f2;
+  --god:#8a5200; --god-bg:#fff4e0; --god-line:#e9c27a;
+  --ok:#1d7a3a; --ok-bg:#e3f4e8; --bad:#b3261e; --bad-bg:#fbe6e4;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --fs:17px; --lh:1.6; --ls:0;
+  --ph0:#d7191c; --ph2:#ee4a1f; --ph4:#f59a1b; --ph6:#e6d21a; --ph7:#4caf3d; --ph9:#1b8f9a; --ph11:#2a55b8; --ph13:#5b2a9a;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e161c; --surface:#16212a; --sunk:#1c2a34; --ink:#e5edf2; --muted:#9aacb8; --line:#2b3a45;
+  --accent:#f26aaa; --accent-soft:#3a1a2b; --teal:#5cc6cf; --teal-soft:#13343a;
+  --god:#f3b54f; --god-bg:#2e2412; --god-line:#6b5222;
+  --ok:#6fd38e; --ok-bg:#15301f; --bad:#ff8a80; --bad-bg:#3a1916; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e161c; --surface:#16212a; --sunk:#1c2a34; --ink:#e5edf2; --muted:#9aacb8; --line:#2b3a45;
+  --accent:#f26aaa; --accent-soft:#3a1a2b; --teal:#5cc6cf; --teal-soft:#13343a;
+  --god:#f3b54f; --god-bg:#2e2412; --god-line:#6b5222;
+  --ok:#6fd38e; --ok-bg:#15301f; --bad:#ff8a80; --bad-bg:#3a1916; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.psec{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.psec:first-of-type{border-top:0;padding-top:0}
+.psec h3{font-size:1.02rem}
+.guide{display:block;color:var(--teal);font-weight:700;font-size:.85rem;margin-top:4px}
+.psec ul{margin:0;padding-left:1.2em;display:grid;gap:5px}
+.bo{width:100%;border-collapse:collapse;font-size:.92rem}
+.bo th,.bo td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.bo th{background:var(--sunk)}
+.check{display:grid;gap:6px}
+.check label{display:flex;gap:8px;align-items:flex-start}
+@media (max-width:700px){.psec{grid-template-columns:minmax(0,1fr)}}
+html{font-size:var(--fs)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:var(--lh);letter-spacing:var(--ls);word-spacing:calc(var(--ls)*2)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:6px}
+.eq,.mono{font-family:var(--f-mono);font-size:.92em}
+sub{font-size:.72em}
+.strip{height:6px;background:linear-gradient(90deg,var(--ph0),var(--ph2),var(--ph4),var(--ph6),var(--ph7),var(--ph9),var(--ph11),var(--ph13))}
+
+/* toolbar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1320px;margin:0 auto}
+.brand{display:flex;flex-direction:column;min-width:0;margin-right:auto}
+.brand small{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brand b{font-family:var(--f-display);font-size:1.15rem;font-weight:800}
+.tools{display:flex;flex-wrap:wrap;gap:6px}
+.tbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.82rem;display:inline-flex;gap:6px;align-items:center}
+.tbtn[aria-pressed="true"]{background:var(--teal-soft);border-color:var(--teal);color:var(--teal);font-weight:700}
+.tbtn.god[aria-pressed="true"]{background:var(--god-bg);border-color:var(--god);color:var(--god)}
+.godlock{display:flex;gap:6px;align-items:center;font-size:.82rem}
+.godlock input{width:90px;padding:4px 8px;border:1px solid var(--god-line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+
+/* shell */
+.shell{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;padding-block:24px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);align-self:start;display:flex;flex-direction:column;gap:4px}
+.rail .lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px}
+.rail a{display:grid;grid-template-columns:44px 1fr auto;gap:6px;align-items:center;text-decoration:none;color:var(--ink);padding:7px 10px;border-radius:10px;font-size:.88rem;line-height:1.25}
+.rail a:hover{background:var(--sunk)}
+.rail a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.rail .code{font-family:var(--f-mono);font-size:.78rem;color:inherit;opacity:.75}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dot.r1{background:var(--ph0)}.dot.r2{background:var(--ph4)}.dot.r3{background:var(--ph9)}.dot.r4{background:var(--ph7)}
+main{min-width:0;display:flex;flex-direction:column;gap:22px}
+
+/* lesson header */
+.lhead{display:grid;gap:10px}
+.kicker{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem}
+.chip{border-radius:999px;padding:2px 10px;font-weight:700;font-size:.76rem;letter-spacing:.03em;background:var(--sunk);color:var(--muted)}
+.chip.crit{background:var(--accent-soft);color:var(--accent)}
+.lhead h1{font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:800}
+.objectives{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;display:grid;gap:6px}
+.objectives h3{font-size:.8rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-family:var(--f-body)}
+.objectives ul{margin:0;padding-left:1.2em;display:grid;gap:3px}
+
+/* UDL sections */
+.udl{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.udl-h{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.udl-h h2{font-size:1.3rem;font-weight:700}
+.tag{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:6px}
+.tag.e{background:#f9e3ee;color:#8c1652}.tag.r{background:#dff1f2;color:#0b5960}.tag.a{background:#e6e3fa;color:#3d2a8f}
+:root[data-theme="dark"] .tag.e{background:#3a1a2b;color:#f6a3c9}:root[data-theme="dark"] .tag.r{background:#13343a;color:#8fe0e6}:root[data-theme="dark"] .tag.a{background:#25204a;color:#bdb3ff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tag.e{background:#3a1a2b;color:#f6a3c9}:root:not([data-theme="light"]) .tag.r{background:#13343a;color:#8fe0e6}:root:not([data-theme="light"]) .tag.a{background:#25204a;color:#bdb3ff}}
+.say{border:1px solid var(--line);background:transparent;border-radius:8px;font-size:.78rem;padding:3px 9px;color:var(--muted)}
+.hook{font-size:1.08rem;border-left:4px solid var(--accent);padding:4px 0 4px 14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:var(--sunk);border-radius:12px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.card h4{font-size:1rem}
+.choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.choice button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;display:grid;gap:3px}
+.choice button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice b{font-size:.95rem}.choice span{font-size:.85rem;color:var(--muted)}
+.ideas{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.vocab div{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.92rem}
+.vocab b{display:block;color:var(--teal)}
+
+/* worked examples */
+.we{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.we-q{background:var(--sunk);padding:10px 14px;font-weight:700}
+.we ol{margin:0;padding:10px 14px 10px 2.2em;display:grid;gap:6px}
+.we li[hidden]{display:none}
+.we-foot{display:flex;gap:8px;padding:0 14px 12px;flex-wrap:wrap}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:10px;padding:6px 14px;font-size:.88rem;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* practice */
+.q{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
+.q-opts{display:grid;gap:6px}
+.q-opts button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px}
+.q-opts button.right{background:var(--ok-bg);border-color:var(--ok)}
+.q-opts button.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.fb{font-size:.92rem;border-radius:8px;padding:7px 10px}
+.fb.ok{background:var(--ok-bg);color:var(--ok)}.fb.no{background:var(--bad-bg);color:var(--bad)}
+.hint{font-size:.88rem;color:var(--muted)}
+
+/* exit */
+.exit{display:grid;gap:10px}
+.rate{display:flex;flex-wrap:wrap;gap:6px}
+.rate button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:.85rem}
+.rate button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+textarea,input[type=text],input[type=number],select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+textarea{min-height:70px;resize:vertical}
+
+/* god mode */
+.godpanel{display:none;border:2px dashed var(--god-line);background:var(--god-bg);border-radius:16px;padding:16px 18px;gap:12px}
+body.god .godpanel{display:grid}
+.godpanel h2{color:var(--god);font-size:1.2rem}
+.godpanel h4{color:var(--god);font-size:.95rem;margin-top:4px}
+.godpanel ul{margin:0;padding-left:1.2em;display:grid;gap:3px}
+.timing{width:100%;border-collapse:collapse;font-size:.92rem}
+.timing td{border-top:1px solid var(--god-line);padding:6px 8px;vertical-align:top}
+.timing td:first-child{font-family:var(--f-mono);white-space:nowrap;color:var(--god);font-weight:600}
+.godinline{display:none;color:var(--god);font-size:.88rem;border-left:3px solid var(--god);padding-left:8px}
+body.god .godinline{display:block}
+body.god .q-opts button[data-c="1"]{outline:2px dashed var(--god);outline-offset:1px}
+
+/* tools */
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px;min-width:0}
+.tool-h{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.phbar{height:28px;border-radius:8px;background:linear-gradient(90deg,var(--ph0) 0%,var(--ph2) 14%,var(--ph4) 28%,var(--ph6) 43%,var(--ph7) 50%,var(--ph9) 64%,var(--ph11) 79%,var(--ph13) 100%)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.readout div{background:var(--sunk);border-radius:10px;padding:8px 10px}
+.readout small{display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.readout b{font-family:var(--f-mono);font-size:1rem}
+.swatch{width:100%;height:58px;border-radius:12px;border:1px solid var(--line);transition:background .3s}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-size:.86rem}
+.seg button[aria-pressed="true"]{background:var(--teal);color:var(--bg);border-color:var(--teal)}
+.eqbox{font-family:var(--f-mono);background:var(--sunk);border-radius:10px;padding:10px 12px;overflow-x:auto;line-height:1.8}
+.oxides{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.ox{border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;gap:6px}
+.ox.good{border-color:var(--ok);background:var(--ok-bg)}.ox.badx{border-color:var(--bad);background:var(--bad-bg)}
+.ox .eq{font-size:1.05rem;font-weight:600}
+.ox select{padding:4px 6px;font-size:.85rem}
+.flaskwrap{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}
+.svgwrap{overflow-x:auto}
+svg text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
+table.data{border-collapse:collapse;width:100%;font-size:.9rem}
+table.data th,table.data td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+table.data th{background:var(--sunk);font-weight:700}
+table.data input{padding:4px;text-align:center;border-radius:6px;min-width:62px}
+.tablewrap{overflow-x:auto}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.lcard{text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:6px}
+.lcard:hover{border-color:var(--accent)}
+.lcard .code{font-family:var(--f-mono);font-size:.8rem;color:var(--accent)}
+.timeline{display:grid;gap:8px}
+.tl{display:grid;grid-template-columns:92px 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.tl b{font-family:var(--f-mono)}
+.state{font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px}
+.state.done{background:var(--ok-bg);color:var(--ok)}.state.next{background:var(--accent-soft);color:var(--accent)}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:.88rem;z-index:40}
+.glossary-d{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);border-left:1px solid var(--line);z-index:35;padding:calc(20px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 20px 18px;overflow-y:auto;display:grid;gap:10px;align-content:start}
+.focus .optional{display:none}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .rail .lbl{display:none}
+  .rail a{grid-template-columns:auto auto;white-space:nowrap;border:1px solid var(--line)}
+  .rail a .t{display:none}
+  .flaskwrap{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="strip" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><small>Grade 10 Chemistry A · MYP Sciences</small><b>Acid-Base Dynamics</b></div>
+    <div class="tools" role="toolbar" aria-label="Learning options">
+      <button class="tbtn" id="tSmaller" aria-label="Smaller text">A−</button>
+      <button class="tbtn" id="tBigger" aria-label="Larger text">A+</button>
+      <button class="tbtn" id="tSpace" aria-pressed="false">Easy-read spacing</button>
+      <button class="tbtn" id="tFocus" aria-pressed="false">Focus mode</button>
+      <button class="tbtn" id="tGloss">Glossary</button>
+      <button class="tbtn god" id="tGod" aria-pressed="false">God mode</button>
+      <span class="godlock" id="godLock" hidden><label for="godCode">Teacher code</label><input id="godCode" type="password" autocomplete="off"><button class="tbtn" id="godGo">Unlock</button></span>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Lessons"></nav>
+  <main id="main"></main>
+</div>
+
+<aside class="glossary-d" id="glossary" hidden aria-label="Glossary">
+  <div class="row" style="justify-content:space-between"><h2>Glossary</h2><button class="btn ghost" id="glossClose">Close</button></div>
+  <input type="text" id="glossSearch" placeholder="Search a word…" aria-label="Search the glossary">
+  <div id="glossList" class="vocab" style="grid-template-columns:1fr"></div>
+</aside>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const F=s=>esc(s).replace(/([A-Za-z\)\]])(\d+)/g,'$1<sub>$2</sub>');           // formula formatter
+const T=s=>String(s).replace(/\{([^}]+)\}/g,(m,f)=>'<span class="eq">'+F(f)+'</span>'); // inline {formula}
+const store={get(k,d){try{const v=localStorage.getItem('abd_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('abd_'+k,JSON.stringify(v))}catch(e){}}};
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2200)}
+
+/* ---------------- CONTENT ---------------- */
+const UNIT={
+ soi:"Relationships between elements drive transformations — such as the interaction between acids and bases — that scientists use as evidence to predict and control chemical change.",
+ gc:"Scientific and technical innovation — Opportunity, Risk",
+ key:"Relationships", related:"Evidence, Interaction, Transformation",
+ cu:"Interactions between substances transform their properties, and this transformation provides evidence of the underlying relationships that govern how matter behaves."
+};
+
+const L=[
+{id:"l1",code:"2.1",title:"The pH scale and indicators",crit:"A",tool:"ph",
+ obj:["I can describe the pH scale (0–14) and classify a solution as acidic, neutral or alkaline.","I can link pH to the concentration of H⁺ and OH⁻ ions.","I can predict the colour of universal indicator, litmus, methyl orange and phenolphthalein."],
+ hook:"Your stomach acid is about pH 1.5 and your blood is about pH 7.4. How can a small change in a number mean the difference between digesting food and dissolving it?",
+ why:"pH is used every day: doctors check blood, farmers in Malawi test soil before planting maize, and pool and water-treatment workers test water.",
+ choices:[["Explore","Drag the pH slider and record what changes."],["Real samples","Test the household substances on the demo bench."],["Predict first","Write your predicted pH for 5 substances before seeing any data."]],
+ ideas:["pH runs from 0 to 14. Below 7 is acidic, 7 is neutral, above 7 is alkaline.","Acids release {H+} ions in water. Alkalis release {OH-} ions in water.","Each step of 1 pH unit is a 10× change in {H+} concentration. pH 3 has 10× more {H+} than pH 4.","An indicator is a dye that changes colour depending on pH. Universal indicator shows a range of colours, so it gives an approximate pH value."],
+ vocab:[["pH","A number (0–14) showing how acidic or alkaline a solution is."],["Indicator","A substance that changes colour with pH."],["Neutral","pH 7: [H⁺] = [OH⁻]."],["Concentration","Amount of substance in a given volume, in mol/dm³."]],
+ worked:[
+  {q:"How many times more H⁺ ions are in a solution of pH 2 than a solution of pH 5?",steps:["Find the difference in pH: 5 − 2 = 3 units.","Each unit is a factor of 10.","10 × 10 × 10 = 10³ = 1000."],a:"pH 2 has 1000 times more H⁺ ions than pH 5."},
+  {q:"A colourless solution turns phenolphthalein pink and universal indicator purple. What can you say about it?",steps:["Phenolphthalein turns pink only above about pH 8.2, so the solution is alkaline.","Purple on universal indicator means about pH 12–14.","So it is a strongly alkaline solution with a high concentration of OH⁻ ions."],a:"Strong alkali, pH ≈ 12–14 (e.g. sodium hydroxide solution)."}],
+ practice:[
+  {q:"Which pH shows the strongest acid?",o:["pH 6","pH 4","pH 1","pH 8"],c:2,w:"The lower the pH, the higher the H⁺ concentration, so pH 1 is the most acidic."},
+  {q:"Methyl orange is added to a solution of pH 9. What colour is seen?",o:["Red","Orange","Yellow","Colourless"],c:2,w:"Methyl orange is red below pH 3.1 and yellow above pH 4.4, so it is yellow at pH 9."},
+  {q:"Solution X has pH 3 and solution Y has pH 5. Which statement is correct?",o:["Y has 2× more H⁺ than X","X has 100× more H⁺ than Y","X has 2× more H⁺ than Y","They have the same H⁺"],c:1,w:"A difference of 2 pH units is 10 × 10 = 100 times."}],
+ express:[["Sketch","Draw and label a pH scale with 6 everyday substances."],["Explain aloud","Record a 60-second voice note explaining why pH 3 is 10× more acidic than pH 4."],["Table","Make an indicator colour table for 4 indicators."],["Teach it","Make a 3-question quiz for a partner."]],
+ exit:["Give one acid, one alkali and one neutral substance with approximate pH values.","Why is universal indicator more useful than litmus?"],
+ teacher:{timing:[["0–5","Hook: stomach acid vs blood. Think-pair-share."],["5–15","Demo: universal indicator with 8 household samples (vinegar, lemon juice, soap, baking soda, bleach (teacher only), milk of magnesia, tap water, cola). Students predict, then observe."],["15–30","pH explorer tool + key ideas. Model the 10× rule with worked example 1."],["30–45","Indicator stations (litmus, methyl orange, phenolphthalein). Students complete colour table."],["45–55","Practice questions; choose one Express task."],["55–60","Exit ticket + confidence rating."]],
+  mis:["'pH 4 is twice as acidic as pH 2' — wrong: lower pH is more acidic, and the scale is logarithmic.","'Alkalis are safe because they aren't acids' — strong alkalis are corrosive.","'Neutral means no ions' — pure water contains equal, small amounts of H⁺ and OH⁻."],
+  support:"Word bank with colour cards; pre-labelled pH scale to complete; sentence frame: 'The solution is ___ because the indicator turned ___ which means pH ___.'",
+  ext:"Introduce pH = −log[H⁺]: calculate the pH of 0.01 mol/dm³ HCl (pH 2). Why can pH go below 0?",
+  safety:"Eye protection. Teacher handles bleach and any concentrated samples. Phenolphthalein solution contains ethanol (flammable).",
+  check:"Mini-whiteboards: show a pH value, students hold up the indicator colour."}},
+
+{id:"l2",code:"2.2",title:"Properties and reactions of acids",crit:"A",tool:"react",
+ obj:["I can predict the salt formed when an acid reacts with a metal, metal oxide, metal hydroxide or carbonate.","I can write word and balanced symbol equations for these reactions.","I can describe the tests for hydrogen and carbon dioxide."],
+ hook:"Drop a piece of magnesium ribbon into acid and it fizzes and disappears. Where does the metal go, and what is the gas?",
+ why:"Acid reactions are used to make fertilisers, clean metals before painting, and are why marble statues and limestone buildings wear away in acid rain.",
+ choices:[["Station rotation","Carry out all four reaction types at practical stations."],["Builder first","Use the reaction builder to predict, then test two at the bench."],["Pattern hunter","Find the rule that names every salt from its acid."]],
+ ideas:["acid + metal → salt + hydrogen","acid + metal oxide → salt + water","acid + metal hydroxide → salt + water","acid + metal carbonate → salt + water + carbon dioxide","The acid decides the salt's family: hydrochloric → chlorides, sulfuric → sulfates, nitric → nitrates.","Test for {H2}: a lit splint gives a squeaky pop. Test for {CO2}: limewater turns milky (cloudy)."],
+ vocab:[["Salt","A compound formed when the H⁺ of an acid is replaced by a metal or ammonium ion."],["Effervescence","Fizzing caused by a gas being produced."],["Balanced equation","Equation with the same number of each atom on both sides."],["Limewater","Calcium hydroxide solution; goes milky with CO₂."]],
+ worked:[
+  {q:"Write the word and balanced symbol equation for zinc reacting with hydrochloric acid.",steps:["Type: acid + metal → salt + hydrogen.","Hydrochloric acid makes a chloride: zinc chloride.","Word equation: zinc + hydrochloric acid → zinc chloride + hydrogen.","Formulae: Zn + HCl → ZnCl2 + H2.","Balance chlorine and hydrogen: put 2 in front of HCl."],a:"Zn + 2HCl → ZnCl2 + H2"},
+  {q:"Write the balanced equation for calcium carbonate reacting with nitric acid.",steps:["Type: acid + carbonate → salt + water + carbon dioxide.","Nitric acid makes a nitrate: calcium nitrate, Ca(NO3)2 (Ca²⁺ needs two NO₃⁻).","Unbalanced: CaCO3 + HNO3 → Ca(NO3)2 + H2O + CO2.","Two nitrates on the right, so 2HNO3 on the left. Check H: 2 = 2. Check O: 3 + 6 = 6 + 1 + 2."],a:"CaCO3 + 2HNO3 → Ca(NO3)2 + H2O + CO2"}],
+ practice:[
+  {q:"Which salt forms when copper(II) oxide reacts with sulfuric acid?",o:["Copper chloride","Copper sulfate","Copper nitrate","Copper carbonate"],c:1,w:"Sulfuric acid always produces sulfates."},
+  {q:"A gas from a reaction turns limewater milky. Which reactant was added to the acid?",o:["Magnesium","Sodium hydroxide","Sodium carbonate","Copper oxide"],c:2,w:"Only carbonates give carbon dioxide, which turns limewater milky."},
+  {q:"Which equation is correctly balanced?",o:["Mg + HCl → MgCl2 + H2","Mg + 2HCl → MgCl2 + H2","2Mg + HCl → MgCl2 + H2","Mg + 2HCl → MgCl + H2"],c:1,w:"MgCl₂ has 2 Cl, so you need 2HCl, which also gives the 2 H in H₂."}],
+ express:[["Flow chart","Make a flow chart of the 4 reaction types with one example each."],["Lab video","Film a 30-second clip of one reaction and narrate the observations."],["Equation cards","Write 6 balanced equations on cards for a matching game."],["Comic","Draw a 4-panel comic of a metal 'meeting' an acid."]],
+ exit:["Predict the products of magnesium oxide + hydrochloric acid and write the balanced equation.","How would you prove a gas is hydrogen?"],
+ teacher:{timing:[["0–5","Hook demo: Mg ribbon in 1 mol/dm³ HCl; collect gas, squeaky-pop test."],["5–15","Model the four general equations and the naming rule (key ideas)."],["15–35","Practical stations (Mg, CuO warmed, NaOH + indicator, CaCO3 chips + limewater). Record observations in a table."],["35–45","Worked examples 1–2 under the visualiser; reaction builder for self-check."],["45–55","Practice questions + Express choice."],["55–60","Exit ticket."]],
+  mis:["Thinking the metal 'disappears' — it becomes ions in solution (aqueous salt).","Writing MgCl instead of MgCl₂ — revisit ion charges.","Thinking all acid reactions give hydrogen."],
+  support:"Partially completed equation frames; ion charge card (Na⁺, Mg²⁺, Ca²⁺, Zn²⁺, Cu²⁺, Cl⁻, SO₄²⁻, NO₃⁻, CO₃²⁻).",
+  ext:"Write ionic equations, e.g. 2H⁺(aq) + CO₃²⁻(aq) → H₂O(l) + CO₂(g). Why do nitric acid and metals often give nitrogen oxides instead of hydrogen?",
+  safety:"Eye protection. Dilute acids only (≤1 mol/dm³). Warm CuO gently — no boiling. Extinguish splints.",
+  check:"Cold-call: name the salt from any acid + reactant pair."}},
+
+{id:"l3",code:"2.3",title:"Bases and alkalis",crit:"A",tool:null,
+ obj:["I can explain the difference between a base and an alkali.","I can name common alkalis and describe their uses.","I can write the ionic equation for neutralisation."],
+ hook:"All alkalis are bases, but not all bases are alkalis. Can you work out why before the end of the lesson?",
+ why:"Alkalis are in soap, oven cleaner and indigestion tablets. Farmers spread lime (a base) on acidic fields so crops can grow.",
+ choices:[["Card sort","Sort 12 substance cards into bases, alkalis and neither."],["Solubility test","Test whether CuO, MgO, NaOH and CaO dissolve and change indicator."],["Venn diagram","Build a Venn diagram of bases and alkalis."]],
+ ideas:["A base is a substance that reacts with an acid to form a salt and water (metal oxides and hydroxides).","An alkali is a base that dissolves in water and releases {OH-} ions.","Common alkalis: sodium hydroxide {NaOH}, potassium hydroxide {KOH}, calcium hydroxide {Ca(OH)2}, ammonia solution {NH3}(aq).","Ammonia makes OH⁻ by reacting with water: {NH3} + {H2O} ⇌ {NH4+} + {OH-}.","Neutralisation in every acid–alkali reaction: {H+}(aq) + {OH-}(aq) → {H2O}(l)."],
+ vocab:[["Base","Reacts with an acid to give a salt and water."],["Alkali","A soluble base; gives OH⁻ ions in water."],["Neutralisation","Reaction of H⁺ with OH⁻ (or a base) to form water."],["Insoluble","Does not dissolve in water."]],
+ worked:[
+  {q:"Copper(II) oxide is a base but not an alkali. Explain why.",steps:["A base reacts with an acid to give salt + water. CuO + H2SO4 → CuSO4 + H2O, so CuO is a base.","An alkali must dissolve in water to give OH⁻ ions.","CuO is insoluble in water, so it releases no OH⁻ ions and does not change indicator colour."],a:"CuO neutralises acids (base) but is insoluble, so it is not an alkali."},
+  {q:"Write the ionic equation for potassium hydroxide reacting with nitric acid.",steps:["Full equation: KOH + HNO3 → KNO3 + H2O.","Split into ions: K⁺ + OH⁻ + H⁺ + NO₃⁻ → K⁺ + NO₃⁻ + H₂O.","Remove spectator ions (K⁺ and NO₃⁻) that appear on both sides."],a:"H⁺(aq) + OH⁻(aq) → H₂O(l)"}],
+ practice:[
+  {q:"Which of these is an alkali?",o:["Copper(II) oxide","Magnesium oxide (insoluble)","Sodium hydroxide","Iron(III) oxide"],c:2,w:"NaOH is soluble and gives OH⁻ ions in water."},
+  {q:"What are the spectator ions when NaOH reacts with HCl?",o:["H⁺ and OH⁻","Na⁺ and Cl⁻","Na⁺ and OH⁻","H⁺ and Cl⁻"],c:1,w:"Na⁺ and Cl⁻ are unchanged; only H⁺ and OH⁻ react."},
+  {q:"Why is calcium hydroxide spread on fields?",o:["To add acid to soil","To neutralise acidic soil","To kill all bacteria","To make the soil wetter"],c:1,w:"Ca(OH)₂ is a base, so it neutralises excess acid in soil."}],
+ express:[["Venn","Draw the bases/alkalis Venn diagram with 3 examples in each part."],["Advert","Design an advert for an antacid explaining the chemistry."],["Explain","Write 4 sentences explaining the hook question."]],
+ exit:["Define base and alkali in your own words.","Write the ionic equation for neutralisation."],
+ teacher:{timing:[["0–5","Hook question; students note a first guess."],["5–20","Solubility + indicator test on CuO, MgO, CaO, NaOH (teacher demo for NaOH pellets)."],["20–30","Key ideas; build Venn diagram as a class."],["30–40","Worked examples incl. spectator ions."],["40–55","Card sort/choice + practice."],["55–60","Return to hook; exit ticket."]],
+  mis:["'Base' and 'alkali' used as synonyms.","Thinking ammonia contains OH⁻ — it makes OH⁻ by reacting with water.","Spectator ions 'do nothing' so they are left out of the salt."],
+  support:"Pre-drawn Venn with labelled cards to place; visual of ions as coloured circles.",
+  ext:"Brønsted–Lowry preview: an acid is a proton (H⁺) donor and a base is a proton acceptor. Identify the acid and base in NH₃ + H₂O ⇌ NH₄⁺ + OH⁻.",
+  safety:"Teacher handles solid NaOH (corrosive). CaO reacts exothermically with water.",
+  check:"Thumbs up/down on 6 rapid statements ('MgO is an alkali')."}},
+
+{id:"l4",code:"2.4",title:"Oxides: acidic, basic and amphoteric",crit:"A",tool:"oxide",
+ obj:["I can classify oxides as acidic, basic, amphoteric or neutral.","I can relate an oxide's character to whether its element is a metal or non-metal.","I can write equations for amphoteric oxides reacting with acid and alkali."],
+ hook:"Burn sulfur and dissolve the gas in water: the indicator goes red. Burn magnesium and do the same: it goes blue. Same reaction with oxygen, opposite results. Why?",
+ why:"Sulfur and nitrogen oxides from power stations and vehicles cause acid rain. Basic oxides like CaO are used to remove these gases from factory chimneys.",
+ choices:[["Test & sort","React oxide samples with acid and alkali, then classify."],["Periodic map","Colour a periodic table by oxide type."],["Classifier tool","Use the oxide classifier and explain your mistakes."]],
+ ideas:["Metal oxides are usually basic: they react with acids, e.g. {MgO}, {CaO}, {Na2O}, {CuO}.","Non-metal oxides are usually acidic: they react with alkalis and form acids in water, e.g. {CO2}, {SO2}, {P4O10}, {NO2}.","Amphoteric oxides react with both acids and alkalis: {Al2O3}, {ZnO}.","Neutral oxides react with neither: {CO}, {NO}, {H2O}.","Across period 3 the oxides change from basic ({Na2O}) through amphoteric ({Al2O3}) to acidic ({SO2}, {P4O10})."],
+ vocab:[["Acidic oxide","Oxide that reacts with alkalis; often forms an acid in water."],["Basic oxide","Oxide that reacts with acids to form salt + water."],["Amphoteric","Reacts with both acids and alkalis."],["Neutral oxide","Reacts with neither acids nor alkalis."]],
+ worked:[
+  {q:"Zinc oxide is amphoteric. Write equations for its reaction with hydrochloric acid and with sodium hydroxide.",steps:["With acid (ZnO acts as a base): ZnO + 2HCl → ZnCl2 + H2O.","With alkali (ZnO acts as an acid): the product is sodium zincate.","ZnO + 2NaOH → Na2ZnO2 + H2O.","Reacting with both is the evidence that ZnO is amphoteric."],a:"ZnO + 2HCl → ZnCl2 + H2O and ZnO + 2NaOH → Na2ZnO2 + H2O"},
+  {q:"Predict the nature of selenium dioxide, SeO₂. Selenium is in group 16, below sulfur.",steps:["Selenium is a non-metal (like sulfur).","Non-metal oxides are usually acidic; SO₂ is acidic.","So SeO₂ will react with alkalis and form an acid in water."],a:"SeO₂ is an acidic oxide."}],
+ practice:[
+  {q:"Which oxide is amphoteric?",o:["MgO","SO2","Al2O3","CO"],c:2,w:"Aluminium oxide reacts with both acids and alkalis."},
+  {q:"A gas dissolves in water to give pH 4 and reacts with NaOH. It is most likely…",o:["CaO","CO2","Na2O","CO"],c:1,w:"CO₂ is a non-metal oxide: acidic, forms carbonic acid in water."},
+  {q:"Carbon monoxide is classed as…",o:["Acidic","Basic","Amphoteric","Neutral"],c:3,w:"CO reacts with neither acids nor alkalis."}],
+ express:[["Periodic map","Colour-code period 3 oxides and annotate the trend."],["Lab report","Write the method and results for testing 4 oxides."],["Infographic","Make an infographic: 'Where does acid rain come from?'"]],
+ exit:["Classify: Na₂O, SO₃, ZnO, NO.","What evidence shows an oxide is amphoteric?"],
+ teacher:{timing:[["0–8","Hook demo (fume cupboard): burn S and Mg, dissolve products, add universal indicator."],["8–25","Inquiry: students test MgO, CuO, ZnO, Al₂O₃ with dilute HCl and dilute NaOH; classify before terms are given."],["25–35","Introduce terms; link to metal/non-metal (Thinker attribute)."],["35–45","Worked examples; oxide classifier tool."],["45–55","Practice + Express choice."],["55–60","Exit ticket."]],
+  mis:["'All oxides are bases.'","'Amphoteric means neutral.'","'Water is an acidic oxide because rain is acidic.'"],
+  support:"Colour-coded periodic table (metals blue, non-metals pink); classification flow chart.",
+  ext:"Explain the trend across period 3 using bonding (ionic → covalent) and electronegativity.",
+  safety:"Burning sulfur only in a fume cupboard (SO₂ is toxic). Do not look directly at burning Mg. Dilute NaOH ≤0.5 mol/dm³ for student work.",
+  check:"Hinge question: 'An oxide reacts with NaOH but not HCl. Is its element a metal?'"}},
+
+{id:"l5",code:"2.5",title:"Preparation of salts",crit:"A",tool:"salt",
+ obj:["I can choose the right method to make a given salt.","I can describe how to make a pure, dry soluble salt by the excess method.","I can describe how to make an insoluble salt by precipitation."],
+ hook:"Copper sulfate crystals are bright blue. You start with a black powder and a colourless acid. How do you end up with blue crystals?",
+ why:"Salt preparation is how fertilisers like ammonium nitrate are made, and how barium sulfate is made for medical X-rays.",
+ choices:[["Method detective","Use the method chooser for 10 salts."],["Make crystals","Prepare copper sulfate crystals by the excess method."],["Storyboard","Storyboard the steps of making a salt."]],
+ ideas:["Step 1: Is the salt soluble? Use solubility rules: all sodium, potassium, ammonium and nitrate salts are soluble; most chlorides and sulfates are soluble.","Soluble salt from an insoluble base, metal or carbonate → excess method: add excess solid to acid, filter, evaporate, crystallise.","Soluble salt of sodium, potassium or ammonium → titration: find the exact volumes, then repeat without indicator and crystallise.","Insoluble salt → precipitation: mix two soluble solutions, filter, wash with distilled water, dry.","Insoluble examples: {AgCl}, {BaSO4}, {PbI2}, {CaCO3}."],
+ vocab:[["Excess","More than is needed, so all the acid reacts."],["Filtrate","Liquid that passes through filter paper."],["Residue","Solid left on filter paper."],["Precipitate","Insoluble solid formed when two solutions are mixed."],["Crystallisation","Forming crystals as a saturated solution cools."]],
+ worked:[
+  {q:"Describe how to make pure, dry copper(II) sulfate crystals from copper(II) oxide.",steps:["Warm dilute sulfuric acid in a beaker.","Add copper(II) oxide a little at a time, stirring, until no more dissolves (excess black solid remains). This makes sure all the acid is used up.","Filter to remove the excess CuO. The blue filtrate is copper sulfate solution.","Heat the filtrate gently to evaporate some water until crystals start to form (saturated).","Leave to cool and crystallise. Filter off the crystals and dry them between filter papers."],a:"CuO + H2SO4 → CuSO4 + H2O; method: excess, filter, evaporate, crystallise, dry."},
+  {q:"Choose two solutions to make barium sulfate and write the equation.",steps:["BaSO₄ is insoluble, so use precipitation.","Need a soluble barium salt: barium chloride, BaCl₂(aq).","Need a soluble sulfate: sodium sulfate, Na₂SO₄(aq).","Mix, filter, wash the precipitate with distilled water, dry."],a:"BaCl2(aq) + Na2SO4(aq) → BaSO4(s) + 2NaCl(aq)"}],
+ practice:[
+  {q:"Which method makes sodium chloride?",o:["Excess method","Titration","Precipitation","Filtration only"],c:1,w:"NaOH is soluble so you can't see when it's in excess; titration finds the exact amount."},
+  {q:"Why is the excess solid added in the excess method?",o:["To make the salt insoluble","To make sure all the acid reacts","To speed up evaporation","To change the colour"],c:1,w:"Excess guarantees no acid is left in the salt solution; the extra solid is filtered off."},
+  {q:"Which salt is made by precipitation?",o:["Zinc chloride","Silver chloride","Magnesium sulfate","Potassium nitrate"],c:1,w:"AgCl is insoluble."}],
+ express:[["Storyboard","Draw the 5 steps of the excess method with labelled apparatus."],["Method card","Write a method card a Grade 8 student could follow."],["Decision tree","Draw your own 'Which method?' decision tree."]],
+ exit:["Which method would you use to make zinc chloride? Why?","Why do we wash a precipitate with distilled water?"],
+ teacher:{timing:[["0–5","Hook: show CuO, H₂SO₄ and a CuSO₄ crystal."],["5–15","Solubility rules + decision tree (key ideas)."],["15–40","Practical: copper sulfate by excess method (crystallise next lesson)."],["40–50","Precipitation demo: BaCl₂ + Na₂SO₄ or AgNO₃ + NaCl; method chooser tool."],["50–60","Practice + exit ticket."]],
+  mis:["Evaporating to dryness — gives powder, can decompose hydrated crystals.","Thinking the excess solid is part of the product.","Forgetting to wash the precipitate."],
+  support:"Picture-based method cards to sequence; solubility rules table on desk.",
+  ext:"Calculate the theoretical yield of CuSO₄·5H₂O from 25.0 cm³ of 1.00 mol/dm³ H₂SO₄ (0.0250 mol × 249.7 g/mol = 6.24 g) and percentage yield from class results.",
+  safety:"Eye protection. Heat gently; do not boil to dryness (spitting). Copper sulfate is harmful; barium chloride is toxic (teacher demo); silver nitrate stains skin.",
+  check:"Show a salt formula; students show 1 (excess), 2 (titration) or 3 (precipitation) fingers."}},
+
+{id:"l6",code:"2.6",title:"Neutralisation and titration",crit:"A / C",tool:"titr",
+ obj:["I can carry out a titration using a burette, pipette and indicator.","I can identify concordant titres and calculate a mean titre.","I can calculate an unknown concentration from titration data."],
+ hook:"A factory must neutralise its acidic waste before it reaches the river. Add too little alkali and fish die; add too much and the river becomes alkaline. How do chemists find the exact amount?",
+ why:"Titration is used in water treatment, food quality control (vinegar, fruit juice) and medicine. It is also the core technique for your Criterion C investigation.",
+ choices:[["Simulator first","Practise on the virtual titration before using glassware."],["Straight to the bench","Do a rough titration then 3 accurate ones."],["Calculation coach","Work through the worked examples step by step."]],
+ ideas:["A pipette measures a fixed volume (e.g. 25.0 cm³) accurately into a conical flask.","A burette adds the second solution until the indicator just changes colour: the end point.","Do a rough titration first, then accurate ones adding drop by drop near the end point. Read the bottom of the meniscus at eye level.","Concordant titres agree within 0.10 cm³. Use only concordant titres for the mean.","Calculation: moles = concentration × volume (in dm³). Use the mole ratio from the equation. Concentration = moles ÷ volume (dm³). 1 dm³ = 1000 cm³."],
+ vocab:[["Titre","Volume added from the burette to reach the end point."],["End point","When the indicator just changes colour."],["Concordant","Titres within 0.10 cm³ of each other."],["Meniscus","Curved surface of a liquid in glassware."],["mol/dm³","Unit of concentration: moles per cubic decimetre."]],
+ worked:[
+  {q:"25.0 cm³ of NaOH (0.100 mol/dm³) needed 20.00 cm³ of HCl to neutralise it. Find the concentration of the HCl.",steps:["Equation: NaOH + HCl → NaCl + H2O (ratio 1 : 1).","Moles NaOH = 0.100 × (25.0 ÷ 1000) = 0.00250 mol.","Moles HCl = 0.00250 mol (1 : 1).","Concentration HCl = 0.00250 ÷ (20.00 ÷ 1000) = 0.125 mol/dm³."],a:"0.125 mol/dm³"},
+  {q:"25.0 cm³ of NaOH (0.200 mol/dm³) needed 22.50 cm³ of H₂SO₄. Find the H₂SO₄ concentration.",steps:["Equation: 2NaOH + H2SO4 → Na2SO4 + 2H2O (ratio 2 : 1).","Moles NaOH = 0.200 × 0.0250 = 0.00500 mol.","Moles H₂SO₄ = 0.00500 ÷ 2 = 0.00250 mol.","Concentration = 0.00250 ÷ 0.02250 = 0.111 mol/dm³ (3 s.f.)."],a:"0.111 mol/dm³"},
+  {q:"Titres: rough 24.6, then 24.15, 24.35, 24.20 cm³. Find the mean titre.",steps:["Ignore the rough titre.","Check which agree within 0.10 cm³: 24.15 and 24.20 (difference 0.05). 24.35 is 0.20 from 24.15, so not concordant.","Mean = (24.15 + 24.20) ÷ 2 = 24.175 → 24.18 cm³ (2 d.p., burette precision)."],a:"Mean titre = 24.18 cm³"}],
+ practice:[
+  {q:"Which piece of apparatus measures the titre?",o:["Pipette","Measuring cylinder","Burette","Conical flask"],c:2,w:"The burette delivers and measures the variable volume."},
+  {q:"Moles in 20.0 cm³ of 0.50 mol/dm³ HCl?",o:["10 mol","0.010 mol","0.10 mol","0.025 mol"],c:1,w:"0.50 × 20.0/1000 = 0.010 mol."},
+  {q:"Why swirl the flask during a titration?",o:["To warm it","To mix the solutions so the colour change is seen accurately","To make bubbles","To dissolve the indicator"],c:1,w:"Swirling mixes the solutions so the end point isn't overshot."}],
+ express:[["Data analysis","Find the unknown acid concentration from the simulator and show working."],["How-to video","Film your titration technique with a voice-over."],["Error poster","Make a poster of 5 titration errors and how to avoid them."]],
+ exit:["What does 'concordant' mean?","Calculate moles in 15.0 cm³ of 0.200 mol/dm³ NaOH."],
+ teacher:{timing:[["0–5","Hook: factory waste scenario."],["5–15","Teacher models technique: rinsing, filling burette, pipette filler, reading the meniscus."],["15–25","Simulator practice (pairs), finding the unknown concentration."],["25–45","Bench titration: rough + 3 accurate; record to 2 d.p."],["45–55","Worked examples 1–3; calculation practice."],["55–60","Exit ticket."]],
+  mis:["Using cm³ in calculations without ÷1000.","Including the rough titre in the mean.","Recording 24.2 instead of 24.20 (precision).","Forgetting the 2 : 1 ratio with H₂SO₄."],
+  support:"Calculation frame: moles known → ratio → moles unknown → concentration. Large-print burette diagram for meniscus reading.",
+  ext:"Back-titration problem: find the mass of CaCO₃ in an antacid tablet. Sketch a pH curve for strong acid / strong alkali and mark the equivalence point.",
+  safety:"Eye protection. Use a pipette filler — never mouth pipette. Fill burette below eye level with a funnel; remove funnel before titrating.",
+  check:"Simulator answer check (God mode shows the unknown concentration)."}},
+
+{id:"l7",code:"2.7",title:"Elemental interactions and reactivity trends",crit:"A",tool:"trend",
+ obj:["I can describe reactivity trends down groups 1 and 17 and across period 3.","I can predict how an unfamiliar element or its oxide reacts with acid or water.","I can justify predictions using position in the periodic table and electron arrangement."],
+ hook:"Lithium fizzes gently in water, sodium melts into a ball and whizzes around, potassium bursts into lilac flame. What would caesium do, and why?",
+ why:"Predicting reactivity lets chemists handle new materials safely, choose metals for batteries, and pick which metals resist corrosion in buildings.",
+ choices:[["Predict & test","Predict, then watch the group 1 demonstration."],["Trend explorer","Use the period 3 explorer to see oxide patterns."],["Data detective","Use melting point and reactivity data to spot trends."]],
+ ideas:["Group 1 metals react with water: metal + water → metal hydroxide + hydrogen. Reactivity increases down the group because the outer electron is further from the nucleus and more easily lost.","Reactivity series with acids: K > Na > Ca > Mg > Al > Zn > Fe > (H) > Cu > Ag. Metals below hydrogen do not react with dilute acids.","Group 17 reactivity decreases down the group: a halogen gains an electron less easily when the atom is larger.","Across period 3: Na, Mg form basic oxides; Al forms an amphoteric oxide; Si, P, S form acidic oxides."],
+ vocab:[["Reactivity","How readily an element takes part in a reaction."],["Reactivity series","Metals ranked from most to least reactive."],["Shielding","Inner electrons reduce the nucleus's pull on outer electrons."],["Group / period","Column / row of the periodic table."]],
+ worked:[
+  {q:"Predict what happens when rubidium (group 1) reacts with dilute hydrochloric acid, and write the equation.",steps:["Rb is below K in group 1, so it is even more reactive (outer electron further from the nucleus).","Metal + acid → salt + hydrogen. Rb forms Rb⁺, so the salt is RbCl.","2Rb + 2HCl → 2RbCl + H2.","Prediction: explosive reaction — this would never be done in school."],a:"2Rb + 2HCl → 2RbCl + H2; extremely violent."},
+  {q:"Strontium (group 2) forms SrO. Predict its reaction with hydrochloric acid.",steps:["Sr is a metal, so SrO is a basic oxide.","Basic oxide + acid → salt + water.","Sr²⁺ needs two Cl⁻: SrCl₂."],a:"SrO + 2HCl → SrCl2 + H2O"}],
+ practice:[
+  {q:"Which metal will NOT react with dilute HCl?",o:["Zinc","Iron","Copper","Magnesium"],c:2,w:"Copper is below hydrogen in the reactivity series."},
+  {q:"Why is potassium more reactive than sodium?",o:["It has more protons so holds electrons tighter","Its outer electron is further from the nucleus and lost more easily","It is a non-metal","It has fewer electrons"],c:1,w:"More shells → more shielding and distance → outer electron lost more easily."},
+  {q:"The oxide of phosphorus is…",o:["Basic","Amphoteric","Acidic","Neutral"],c:2,w:"Phosphorus is a non-metal; P₄O₁₀ is acidic."}],
+ express:[["Prediction card","Write a 'safety data card' predicting the reactions of caesium."],["Graph","Plot the period 3 trend and annotate it."],["Explain","Explain the group 1 trend using an electron shell diagram."]],
+ exit:["Place Ca, Cu, Zn and K in order of reactivity.","Predict the type of oxide formed by chlorine (Cl₂O₇)."],
+ teacher:{timing:[["0–8","Demo: Li, Na, K in water (safety screen, tiny pieces). Students predict first."],["8–20","Explain trend with shell diagrams."],["20–30","Metals + dilute HCl: Mg, Zn, Fe, Cu — rank by bubbling rate."],["30–40","Period 3 trend explorer; link back to 2.4 oxides."],["40–55","Worked examples + practice (unfamiliar elements)."],["55–60","Exit ticket."]],
+  mis:["'More electrons = more reactive' without reasoning.","Halogen trend assumed same direction as group 1.","Copper reacts with all acids."],
+  support:"Shell diagram templates for Li, Na, K; reactivity series ladder card.",
+  ext:"Compare the reactions of SiO₂ and P₄O₁₀ with water. Why is SiO₂ insoluble but still acidic?",
+  safety:"Group 1 demo: teacher only, rice-grain size, safety screen, everyone wears eye protection. K reaction can spit.",
+  check:"Hinge: 'Element X is in group 1 below K. Write the word equation for X + water.'"}},
+
+{id:"l8",code:"2.8",title:"Acids and bases in the real world",crit:"D",tool:"case",
+ obj:["I can explain the chemistry of one real-world acid–base application.","I can discuss environmental, economic and social implications.","I can communicate the science clearly to a non-scientist and cite sources."],
+ hook:"Who should pay to fix acid damage: the factory that made the gas, the government, or the farmers whose fields are affected?",
+ why:"Acid rain damages forests, lakes and buildings. Soil acidity limits crop yields in parts of Malawi, and farmers use agricultural lime to correct it. Antacids treat indigestion.",
+ choices:[["Acid rain","Sulfur and nitrogen oxides from industry and transport."],["Soil pH and farming","Liming acidic soils for maize and other crops."],["Antacids","How indigestion tablets neutralise stomach acid."],["Industrial waste","Neutralising acidic factory effluent."]],
+ ideas:["Natural rain is slightly acidic (about pH 5.6) because {CO2} dissolves to form carbonic acid. Acid rain has a lower pH.","Acid rain: {SO2} and nitrogen oxides from burning fuels form sulfuric and nitric acid in clouds, e.g. 2{SO2} + {O2} + 2{H2O} → 2{H2SO4}.","Liming: {CaCO3} + 2{H+} → {Ca2+} + {H2O} + {CO2} raises soil pH.","Antacids: {Mg(OH)2} + 2{HCl} → {MgCl2} + 2{H2O}.","Criterion D asks you to explain how science is applied, evaluate its implications, use scientific language, and cite your sources."],
+ vocab:[["Implication","A consequence: environmental, economic, social or ethical."],["Flue gas desulfurisation","Removing SO₂ from chimney gases using a base (e.g. CaO)."],["Agricultural lime","Powdered limestone (CaCO₃) used to reduce soil acidity."],["Citation","A reference showing where information came from."]],
+ worked:[
+  {q:"Explain to a farmer, in plain language, why adding lime helps maize grow on acidic soil.",steps:["Science: lime is calcium carbonate, a base. It reacts with the acid (H⁺ ions) in the soil and uses it up.","Plain language: 'Lime works like an indigestion tablet for the soil — it cancels out the sour acid.'","Effect: at a better soil pH, plant roots can take up nutrients like phosphorus more easily, so yields can improve.","Implication: lime costs money and must be transported, so cost and access matter (economic and social)."],a:"A clear claim + science + plain-language analogy + one implication."}],
+ practice:[
+  {q:"Why is normal rain slightly acidic?",o:["It contains SO₂ from volcanoes only","CO₂ dissolves to form carbonic acid","It contains HCl","Clouds are made of acid"],c:1,w:"Atmospheric CO₂ makes rain about pH 5.6."},
+  {q:"Which substance is used to remove SO₂ from power-station chimneys?",o:["Sulfuric acid","Calcium oxide / calcium carbonate","Sodium chloride","Carbon dioxide"],c:1,w:"A basic substance neutralises the acidic SO₂."},
+  {q:"Which is an economic implication of liming fields?",o:["Soil pH increases","Farmers must pay for lime and transport","CO₂ is produced","Ca²⁺ ions form"],c:1,w:"Economic implications are about cost and money."}],
+ express:[["Article","Write a 300-word article for a local newspaper."],["Infographic","Design an infographic for farmers or the public."],["Presentation","Give a 3-minute talk with 4 slides."],["Podcast","Record a 3-minute podcast interview."]],
+ exit:["Name one environmental, one economic and one social implication of your case study.","Which source did you use, and why do you trust it?"],
+ teacher:{timing:[["0–8","Debatable question: four corners (factory / government / farmers / all)."],["8–18","Key ideas and the Criterion D strands; show annotated exemplar."],["18–45","Research in chosen case study; complete the audience planner tool. Tiered readings available."],["45–55","Peer feedback using Criterion D language."],["55–60","Exit ticket; product due date set."]],
+  mis:["Implications listed without explaining the link to the chemistry.","Copying technical text instead of translating it for the audience.","Uncited facts and images."],
+  support:"Tiered readings; planner tool with sentence starters; glossary; bilingual tools allowed with acknowledgement.",
+  ext:"Evaluate two solutions to acid rain (scrubbers vs renewable energy) with costs and benefits. Address the debatable question in a balanced conclusion.",
+  safety:"No practical work. Remind students of the school AI-use policy and acknowledgement requirements.",
+  check:"Planner check-in: each student has a claim, an equation and one cited source before leaving."}},
+
+{id:"l9",code:"2.9",title:"Criteria B & C: acid–base investigation",crit:"B / C",tool:"inv",
+ obj:["I can design a fair-test investigation with independent, dependent and controlled variables.","I can present processed titration data with correct units and precision.","I can evaluate my hypothesis and method and suggest realistic improvements."],
+ hook:"You are the scientist now. Choose one variable, predict its effect, and gather evidence that convinces someone else.",
+ why:"This investigation is assessed on Criterion B (design) and Criterion C (processing and evaluating). Criterion C is due Friday 20 November.",
+ choices:[["Acid concentration","Effect of acid concentration on the titre."],["Type of acid","HCl vs H₂SO₄ at the same concentration."],["Antacid brand","Which antacid neutralises the most acid?"],["Temperature rise","Effect of acid volume on temperature rise when neutralising."]],
+ ideas:["Research question: 'How does [IV] affect [DV] when …?' Make it specific and measurable.","Hypothesis: If … then … because … (use scientific reasoning: moles, ratio, H⁺ concentration).","Variables: one independent (you change), one dependent (you measure), several controlled (you keep the same and say how).","Data: raw data table with units and uncertainty in the headings (burette ±0.05 cm³). Processed data: mean of concordant titres, then a graph.","Evaluation: Is the hypothesis supported? Identify specific errors (end-point judgement, parallax), their effect, and a realistic improvement."],
+ vocab:[["Independent variable","The variable you change."],["Dependent variable","The variable you measure."],["Uncertainty","The range a measurement could be out by, e.g. ±0.05 cm³."],["Validity","Whether the method fairly tests the hypothesis."],["Anomaly","A result that does not fit the pattern."]],
+ worked:[
+  {q:"Write a hypothesis for: 'How does the concentration of HCl affect the volume needed to neutralise 25.0 cm³ of 0.100 mol/dm³ NaOH?'",steps:["If … : If the concentration of HCl increases,","then … : then the titre will decrease,","because … : because each cm³ contains more moles of H⁺, so fewer cm³ are needed to react with the fixed 0.00250 mol of OH⁻ (1 : 1 ratio).","Quantitative bonus: titre ∝ 1/concentration — doubling the concentration should halve the titre."],a:"If [HCl] increases, the titre decreases (inversely proportional) because more moles of H⁺ are present per cm³."},
+  {q:"Turn this weak evaluation into a strong one: 'I would be more careful next time.'",steps:["Name the specific error: 'The pink colour was hard to judge, so I may have overshot the end point.'","Say its effect: 'This would make my titres too large, so the calculated concentration would be too low.'","Give a realistic improvement: 'Use a white tile under the flask and add the alkali drop by drop near the end point; repeat until two titres agree within 0.10 cm³.'"],a:"Error → effect on results → specific improvement."}],
+ practice:[
+  {q:"In an antacid investigation, which is a controlled variable?",o:["Brand of antacid","Volume of acid neutralised","Concentration of HCl used","Number of tablets that dissolve"],c:2,w:"The acid concentration must stay the same for a fair comparison."},
+  {q:"A burette reads 23.4 cm³. How should it be recorded?",o:["23 cm³","23.4 cm³","23.40 cm³","23.400 cm³"],c:2,w:"Burettes are read to 2 decimal places (to the nearest 0.05 cm³)."},
+  {q:"Which is a valid improvement?",o:["Be more careful","Use better equipment","Use a white tile and add drop by drop near the end point","Do it faster"],c:2,w:"Improvements must be specific and realistic."}],
+ express:[["Written report","Standard lab report using the scaffold template."],["Annotated slides","Report as annotated slides with your graph."],["Oral + data","Present data and evaluation orally, with your table and graph."]],
+ exit:["State your IV, DV and two controlled variables.","Which part of Criterion C do you feel least confident about?"],
+ teacher:{timing:[["0–10","Unpack Criterion B/C strands with annotated exemplars (low/mid/high)."],["10–25","Students choose an investigation; complete planner tool (IV, DV, CVs, hypothesis)."],["25–50","Data collection / data processing with the concordance calculator."],["50–60","Peer review of draft table and graph using criterion language; exit ticket."]],
+  mis:["Changing more than one variable.","Controlled variables listed without saying how they are controlled.","Graph of raw trials instead of means; missing units/uncertainties.","Vague evaluation ('human error')."],
+  support:"Criterion scaffold template sheets; sentence frames for hypothesis and evaluation; pre-drawn table.",
+  ext:"Calculate percentage uncertainty in the titre and propagate to the concentration; compare results to theoretical values and calculate percentage error.",
+  safety:"Risk assessment required in the method (eye protection, dilute solutions, spill procedure). Antacid tablets must not be eaten in the lab.",
+  check:"Planner snapshot: teacher circulates and checks each student's variables before data collection. Criterion C deadline: Fri 20 Nov, 4:20 PM."}}
+];
+
+/* Barrier → option for each lesson (Novak-style), used in the planner page and each lesson's God mode */
+const BO={
+ l1:["The logarithmic pH scale (10× per unit) is abstract.","pH explorer slider showing [H⁺] change live, plus the worked example revealed one step at a time."],
+ l2:["Writing formulae and balancing equations takes a lot of working memory.","Ion charge card for everyone; reaction builder to check predictions; equation frames."],
+ l3:["'Base' and 'alkali' sound like the same thing.","Venn diagram, card sort and a solubility test to see the difference."],
+ l4:["Classifying 12 oxides needs a lot of facts held at once.","Rule of thumb (metal → basic, non-metal → acidic) on a colour-coded periodic table; classifier tool gives instant feedback."],
+ l5:["Multi-step methods are hard to sequence from text alone.","Picture method cards, a decision tree and the method chooser tool."],
+ l6:["Mole calculations and fine glassware technique at the same time.","Simulator practice before glassware; calculation frame; large-print meniscus diagram."],
+ l7:["Explaining trends needs atomic structure from earlier units.","Retrieval starter on shell diagrams; trend explorer; reactivity ladder card."],
+ l8:["Dense research texts and writing for a new audience.","Tiered readings, read aloud, audience planner with sentence starters, and a choice of product format."],
+ l9:["Planning a whole investigation and meeting a deadline.","Investigation planner, concordance calculator, criterion scaffolds and a draft checkpoint before 20 Nov."]
+};
+
+/* UDL additions for each ManageBac planner section — follows the BMIS 'Ideas on How to Build UDL into Your ManageBac Units' table (CAST UDL Guidelines 3.0) */
+const PLAN=[
+ {s:"Key and Related Concepts, Global Context, Statement of Inquiry",g:["Welcoming Interests & Identities","Language & Symbols"],i:[
+  "<b>Firm goal, one sentence:</b> \"I can use evidence from reactions to explain and predict how acids, bases and elements interact.\" The goal stays fixed; how students learn it and show it can vary.",
+  "<b>Student-friendly SOI:</b> \"Elements and compounds behave in patterns. When acids and bases react, the changes we see are evidence we can use to predict and control what happens.\" Shown with a visual of a pH strip and a neutralisation reaction.",
+  "<b>Why it matters (lesson 1 discussion):</b> Where do you meet acids and bases at home, on a farm or in your body? Students share examples from their own homes and communities."]},
+ {s:"Inquiry Questions",g:["Welcoming Interests & Identities"],i:[
+  "<b>Debatable, close to students' lives:</b> \"Should farmers have to pay for lime to fix soil that was made acidic by fertilisers and pollution they did not choose?\"",
+  "<b>Connected to students' lives:</b> \"Which acids and bases are used in your family's kitchen, cleaning cupboard or medicine box, and why do they work?\"",
+  "<b>Student-owned:</b> In lesson 1 each student writes one question of their own on the inquiry wall. Selected questions are revisited in 2.8 and can become the Criterion B/C research question."]},
+ {s:"Curriculum: Aims, Objectives, Content, Skills",g:["Language & Symbols","Building Knowledge"],i:[
+  "<b>Predictable barriers and one option for each:</b> <i>Vocabulary</i> (amphoteric, titre, concordant): glossary with search and read aloud, word wall, key words in every lesson. <i>Symbols</i> (formulae, ion charges, state symbols): ion charge card for everyone, formulae always shown with subscripts. <i>Background knowledge</i> (ions, bonding, moles): a retrieval starter at the start of 2.2, 2.6 and 2.7. <i>Dense readings</i>: tiered case-study texts and audio. <i>Volume of calculation</i>: worked examples revealed one step at a time and a calculation frame.",
+  "<b>Pre-teach vocabulary in more than one form:</b> a word, a definition, a picture or demonstration, and an example equation.",
+  "<b>Hook to prior knowledge:</b> each lesson opens with a real-world hook linked to earlier units (atomic structure, ionic bonding, the periodic table)."]},
+ {s:"ATL Skills",g:["Strategy Development"],i:[
+  "<b>Goal-setting at the start:</b> students rate themselves against the unit objectives and set one personal goal (for example, 'I will be able to calculate a concentration from titration data').",
+  "<b>Planning tools:</b> the Criterion B/C investigation planner (variables, hypothesis frame, data table, evaluation frame) and a timeline to the Criterion C deadline (Friday 20 November).",
+  "<b>Midpoint self-check:</b> after 2.5, students review their confidence ratings for 2.1–2.5 on the overview page and choose which lesson to revisit before the Criterion A test (13 November)."]},
+ {s:"Developing IB Learners",g:["Emotional Capacity"],i:[
+  "<b>Reflection on Learner Profile attributes:</b> after the investigation students write two sentences: 'I was an Inquirer when… I was Principled when I recorded an anomalous result honestly by…'",
+  "<b>Learner agency across the unit:</b> students choose their route into each lesson, the way they show learning (choice board), their own investigation variable, and the product format for Criterion D. They track their own confidence lesson by lesson."]},
+ {s:"Integration: International Mindedness, Academic Integrity",g:["Perception","Sustaining Effort & Persistence"],i:[
+  "<b>Cases from a range of cultures, including students' own:</b> soil acidity and liming in Malawian maize farming; acid rain and power-station emissions in industrial regions; antacid use; industrial effluent treatment.",
+  "<b>Students bring examples from their communities:</b> traditional or household uses of acids and bases (cooking, cleaning, remedies), shared in their own words or languages.",
+  "<b>Structured discussion so every voice is heard:</b> four corners on the debatable question in 2.8; think-pair-share after every demonstration.",
+  "<b>Academic integrity:</b> citation practice in the Criterion D planner and honest recording of anomalous data in 2.9."]},
+ {s:"Connections: Language Development",g:["Language & Symbols","Expression & Communication"],i:[
+  "<b>Key materials in more than one form:</b> read-aloud button on every section, adjustable text size and spacing, visual tools (pH explorer, titration simulator), summaries as key ideas.",
+  "<b>Home languages:</b> students may think, discuss and plan in their home language, and use bilingual glossaries or translation tools with acknowledgement.",
+  "<b>Supports for everyone:</b> sentence starters (hypothesis, evaluation, Criterion D), the subject glossary and word banks are available to the whole class, not only to selected students."]},
+ {s:"Assessment",g:["Expression & Communication","Sustaining Effort & Persistence"],i:[
+  "<b>Firm goals, flexible means:</b> criteria stay fixed; Criterion D can be an article, infographic, presentation or podcast; Criterion B/C can be a written report, annotated slides, or an oral presentation with data.",
+  "<b>Student-friendly clarifications:</b> <i>A</i>: 'Explain the chemistry and use it to solve new problems.' <i>B</i>: 'Plan a fair test: question, hypothesis with reasons, variables, method.' <i>C</i>: 'Show your data clearly, explain what it means, and judge your hypothesis and method.' <i>D</i>: 'Explain how acid–base chemistry is used in the real world and what effects it has on people and the environment.' Share an annotated exemplar for each.",
+  "<b>Formative checkpoint with time to improve:</b> draft data table and graph reviewed in class before the Criterion C submission on 20 November."]},
+ {s:"Learning Experiences",g:["Perception","Interaction","Welcoming Interests & Identities"],i:[
+  "<b>One barrier and one option for each lesson:</b> see the table below.",
+  "<b>More than one way in and out:</b> text, audio, demonstration, simulation and practical for every key idea; choice boards let students write, draw, speak or teach.",
+  "<b>Real choices:</b> route into the lesson, investigation variable, case study topic, grouping for practical work and product format."],bo:true},
+ {s:"Student Expectations, Feedback, Differentiation",g:["Sustaining Effort & Persistence"],i:[
+  "<b>Visible success criteria:</b> 'By the end of this lesson' objectives at the top of every lesson page; assessment dates on the overview page and in Google Classroom.",
+  "<b>A lesson to act on feedback:</b> a feedback lesson after the draft Criterion C checkpoint, before the final submission.",
+  "<b>Barriers and options instead of deficit language:</b> replace 'for SEN/ELL students' with 'for anyone who finds the vocabulary a barrier'. Glossaries with visuals, calculation frames, extra processing time and scaffold templates are offered to the whole class. Individual IEP access arrangements stay in place."]},
+ {s:"Reflections",g:["Emotional Capacity"],i:[
+  "<b>Before:</b> expected barriers are listed in the barrier table (logarithmic pH, balancing equations, mole calculations, titration technique).",
+  "<b>During:</b> note which options students actually chose (routes, product formats, tools) and which supports they used most.",
+  "<b>After:</b> record one surprise, and include student feedback from exit tickets and confidence ratings, not only teacher observation."]},
+ {s:"Stream and Resources",g:["Perception","Strategy Development"],i:[
+  "<b>Several formats:</b> this interactive unit site (read aloud, adjustable text, simulations), the Acids–Bases PPT, and audio or summary versions generated with NotebookLM.",
+  "<b>Editable files:</b> post Google Docs rather than PDFs so students can resize text or use text-to-speech.",
+  "<b>Clear labels:</b> name resources by subunit (e.g. '2.6 Titration — worked examples') and remove old ones."]}
+];
+
+const GLOSS=[];L.forEach(l=>l.vocab.forEach(v=>GLOSS.push(v)));
+const seen={};const GL=GLOSS.filter(v=>{const k=v[0].toLowerCase();if(seen[k])return false;seen[k]=1;return true}).sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ---------------- RENDER ---------------- */
+function rail(cur){
+  const r=store.get('rate',{});
+  let h='<div class="lbl">Unit</div><a href="#overview" '+(cur==='overview'?'aria-current="page"':'')+'><span class="code">0</span><span class="t">Overview & UDL map</span><span></span></a><div class="lbl">Lessons</div>';
+  L.forEach(l=>{h+='<a href="#'+l.id+'" '+(cur===l.id?'aria-current="page"':'')+'><span class="code">'+l.code+'</span><span class="t">'+esc(l.title)+'</span><span class="dot '+(r[l.id]?'r'+r[l.id]:'')+'" title="Your confidence"></span></a>'});
+  h+='<div class="lbl">Teacher</div><a href="#planner" '+(cur==='planner'?'aria-current="page"':'')+'><span class="code">UDL</span><span class="t">Planner UDL additions</span><span></span></a>';
+  $('#rail').innerHTML=h;
+}
+
+function overview(){
+  const r=store.get('rate',{});
+  let h='<section class="lhead"><div class="kicker"><span class="chip">MYP Sciences · Grade 10</span><span class="chip crit">Criteria A B C D</span></div><h1>Elemental Interactions and Acid-Base Dynamics</h1></section>';
+  h+='<section class="udl"><div class="udl-h"><h2>Unit at a glance</h2><button class="say" data-say>Read aloud</button></div><div class="grid2">'+
+   '<div class="card"><h4>Statement of inquiry</h4><p>'+esc(UNIT.soi)+'</p></div>'+
+   '<div class="card"><h4>Conceptual understanding</h4><p>'+esc(UNIT.cu)+'</p></div>'+
+   '<div class="card"><h4>Concepts</h4><p><b>Key:</b> '+UNIT.key+'<br><b>Related:</b> '+UNIT.related+'</p></div>'+
+   '<div class="card"><h4>Global context</h4><p>'+UNIT.gc+'</p></div></div></section>';
+  h+='<section class="udl"><div class="udl-h"><h2>How this unit uses UDL</h2></div><div class="grid2">'+
+   '<div class="card"><span class="tag e">Engagement · the why</span><p>Every lesson opens with a real-world hook, offers a choice of route into the lesson, and ends with a confidence rating so you can track your own progress.</p></div>'+
+   '<div class="card"><span class="tag r">Representation · the what</span><p>Ideas come as text, equations, interactive tools and read-aloud audio. Key words are defined in every lesson and in the glossary. Use text size, easy-read spacing and focus mode in the top bar.</p></div>'+
+   '<div class="card"><span class="tag a">Action & expression · the how</span><p>Worked examples reveal one step at a time. Practice gives instant feedback. Each lesson has a choice board so you can show learning by writing, drawing, speaking or teaching.</p></div></div></section>';
+  h+='<section class="udl"><div class="udl-h"><h2>Assessments</h2></div><div class="timeline">'+
+   '<div class="tl"><b>Sun 25 Oct</b><span>Criterion B · Inquiring and designing</span><span class="state done">Done</span></div>'+
+   '<div class="tl"><b>Fri 13 Nov</b><span>Criterion A · Topic test (2.1–2.8)</span><span class="state next">Upcoming</span></div>'+
+   '<div class="tl"><b>Fri 20 Nov</b><span>Criterion C · Processing and evaluating</span><span class="state next">Upcoming</span></div>'+
+   '<div class="tl"><b>TBC</b><span>Criterion D · Real-world context task</span><span class="state">Planned</span></div></div></section>';
+  h+='<section><div class="overview-grid">';
+  L.forEach(l=>{h+='<a class="lcard" href="#'+l.id+'"><span class="code">'+l.code+' · Criterion '+l.crit+'</span><h3>'+esc(l.title)+'</h3><p class="hint">'+esc(l.obj[0])+'</p><span class="hint">Confidence: '+(r[l.id]?['','Not yet','Getting there','Confident','Could teach it'][r[l.id]]:'not rated')+'</span></a>'});
+  h+='</div></section>';
+  h+='<section class="godpanel"><h2>God mode · unit notes</h2><ul><li>Teacher code to unlock God mode: <b class="mono">BMIS</b> (change it in the page source if students learn it).</li><li>Each lesson has a 60-minute timing plan, misconceptions, support and extension tasks, safety notes and a formative check. Adjust timings to your period length.</li><li>Correct practice answers are outlined in amber while God mode is on. The titration simulator shows the hidden acid concentration.</li><li>Student confidence ratings are saved only in each student\'s own browser. Ask students to show you their overview page for a quick class check.</li><li>Suggested sequence before the Criterion A test (13 Nov): 2.7 and 2.8 key ideas, then mixed practice from 2.1–2.6.</li></ul></section>';
+  return h;
+}
+
+const plain=html=>{const d=document.createElement('div');d.innerHTML=html;return d.textContent};
+function planner(){
+  let h='<section class="lhead"><div class="kicker"><span class="chip">Teacher page</span><span class="chip crit">CAST UDL Guidelines 3.0</span></div><h1>Planner UDL additions</h1><p>Text for each section of the ManageBac unit planner, following the BMIS <i>Ideas on How to Build UDL into Your ManageBac Units</i> table. Copy a section and paste it into that part of the planner. Ready for the department share on Wednesday 9 December.</p></section>';
+  h+='<section class="udl">';
+  PLAN.forEach((p,i)=>{h+='<div class="psec"><div><h3>'+esc(p.s)+'</h3>'+p.g.map(g=>'<span class="guide">'+esc(g)+'</span>').join('')+'<button class="btn ghost" data-copy="'+i+'" style="margin-top:10px">Copy section</button></div><div style="min-width:0"><ul>'+p.i.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(p.bo?boTable():'')+'</div></div>'});
+  h+='</section>';
+  const ck=store.get('ck',[false,false,false]);
+  h+='<section class="udl"><h2>Before you close the laptop</h2><div class="check">'+["I have added at least one idea to the planner.","A colleague opening this unit could see the barriers and the planned options for UDL.","I have some ideas on how to use the UDL guidelines in future units."].map((t,i)=>'<label><input type="checkbox" data-ck="'+i+'" '+(ck[i]?'checked':'')+'> '+t+'</label>').join('')+'</div></section>';
+  return h;
+}
+function boTable(){return '<div class="tablewrap" style="margin-top:10px"><table class="bo"><thead><tr><th>Lesson</th><th>Barrier</th><th>Option to remove it</th></tr></thead><tbody>'+L.map(l=>'<tr><td class="mono">'+l.code+'</td><td>'+esc(BO[l.id][0])+'</td><td>'+esc(BO[l.id][1])+'</td></tr>').join('')+'</tbody></table></div>'}
+function lesson(l){
+  let h='<section class="lhead"><div class="kicker"><span class="chip">Lesson '+l.code+'</span><span class="chip crit">Criterion '+l.crit+'</span></div><h1>'+esc(l.title)+'</h1>'+
+   '<div class="objectives"><h3>By the end of this lesson</h3><ul>'+l.obj.map(o=>'<li>'+esc(o)+'</li>').join('')+'</ul></div></section>';
+  // ENGAGEMENT
+  const ch=store.get('choice_'+l.id,null);
+  h+='<section class="udl"><div class="udl-h"><span class="tag e">Engagement</span><button class="say" data-say>Read aloud</button></div><h2>Why should I care?</h2>'+
+   '<p class="hook">'+esc(l.hook)+'</p><p>'+esc(l.why)+'</p>'+
+   '<div class="optional"><p class="hint" style="margin-bottom:6px">Choose your way in:</p><div class="choice">'+l.choices.map((c,i)=>'<button data-choice="'+i+'" aria-pressed="'+(ch===i)+'"><b>'+esc(c[0])+'</b><span>'+esc(c[1])+'</span></button>').join('')+'</div></div></section>';
+  // REPRESENTATION
+  h+='<section class="udl"><div class="udl-h"><span class="tag r">Representation</span><button class="say" data-say>Read aloud</button></div><h2>Key ideas</h2>'+
+   '<ul class="ideas">'+l.ideas.map(i=>'<li>'+T(i)+'</li>').join('')+'</ul>';
+  if(l.tool)h+='<div id="tool"></div>';
+  h+='<h3 style="font-size:1.05rem">Key words</h3><div class="vocab">'+l.vocab.map(v=>'<div><b>'+esc(v[0])+'</b>'+esc(v[1])+'</div>').join('')+'</div></section>';
+  // WORKED EXAMPLES
+  h+='<section class="udl"><div class="udl-h"><span class="tag a">Action & expression</span></div><h2>Worked examples</h2><p class="hint">Try each step yourself first, then reveal the next one.</p>';
+  l.worked.forEach((w,wi)=>{h+='<div class="we" data-we="'+wi+'"><div class="we-q">Example '+(wi+1)+'. '+esc(w.q)+'</div><ol>'+w.steps.map((s,si)=>'<li '+(si>0?'hidden':'')+'>'+fmtStep(s)+'</li>').join('')+'<li hidden><b>Answer:</b> '+fmtStep(w.a)+'</li></ol><div class="we-foot"><button class="btn" data-next>Next step</button><button class="btn ghost" data-all>Show all</button><button class="btn ghost" data-reset>Hide</button></div></div>'});
+  h+='</section>';
+  // PRACTICE
+  h+='<section class="udl"><div class="udl-h"><span class="tag a">Action & expression</span></div><h2>Check your understanding</h2>';
+  l.practice.forEach((p,pi)=>{h+='<div class="q" data-q="'+pi+'"><b>'+(pi+1)+'. '+fmtStep(p.q)+'</b><div class="q-opts">'+p.o.map((o,oi)=>'<button data-o="'+oi+'" data-c="'+(oi===p.c?1:0)+'">'+fmtStep(o)+'</button>').join('')+'</div><div class="fb" hidden></div><div class="godinline">Answer: '+fmtStep(p.o[p.c])+' — '+esc(p.w)+'</div></div>'});
+  h+='</section>';
+  // CHOICE BOARD
+  const ex=store.get('express_'+l.id,null);
+  h+='<section class="udl optional"><div class="udl-h"><span class="tag a">Action & expression</span></div><h2>Show what you know: choose one</h2><div class="choice">'+l.express.map((e,i)=>'<button data-express="'+i+'" aria-pressed="'+(ex===i)+'"><b>'+esc(e[0])+'</b><span>'+fmtStep(e[1])+'</span></button>').join('')+'</div></section>';
+  // EXIT
+  const r=store.get('rate',{});const notes=store.get('exit_'+l.id,'');
+  h+='<section class="udl"><div class="udl-h"><span class="tag e">Engagement · reflect</span></div><h2>Exit ticket</h2><ol style="margin:0;padding-left:1.2em">'+l.exit.map(e=>'<li>'+fmtStep(e)+'</li>').join('')+'</ol>'+
+   '<label for="exitNotes" class="hint">Your answers (saved on this device)</label><textarea id="exitNotes">'+esc(notes)+'</textarea>'+
+   '<div class="exit"><span class="hint">How confident are you with today\'s objectives?</span><div class="rate">'+['Not yet','Getting there','Confident','Could teach it'].map((t,i)=>'<button data-rate="'+(i+1)+'" aria-pressed="'+(r[l.id]===i+1)+'">'+(i+1)+' · '+t+'</button>').join('')+'</div></div></section>';
+  // GOD MODE
+  const t=l.teacher;
+  h+='<section class="godpanel" aria-label="Teacher notes"><h2>God mode · teacher notes</h2>'+
+   '<h4>Barrier → option</h4><p><b>Barrier:</b> '+esc(BO[l.id][0])+'<br><b>Option:</b> '+esc(BO[l.id][1])+'</p>'+
+   '<h4>Suggested timing (60 min)</h4><div class="tablewrap"><table class="timing">'+t.timing.map(x=>'<tr><td>'+x[0]+'</td><td>'+esc(x[1])+'</td></tr>').join('')+'</table></div>'+
+   '<h4>Common misconceptions</h4><ul>'+t.mis.map(m=>'<li>'+esc(m)+'</li>').join('')+'</ul>'+
+   '<div class="grid2"><div><h4>Support (SEN / EAL)</h4><p>'+esc(t.support)+'</p></div><div><h4>Extension</h4><p>'+esc(t.ext)+'</p></div></div>'+
+   '<h4>Safety</h4><p>'+esc(t.safety)+'</p><h4>Formative check</h4><p>'+esc(t.check)+'</p>'+
+   '<h4>Worked example answers</h4><ul>'+l.worked.map(w=>'<li>'+fmtStep(w.a)+'</li>').join('')+'</ul></section>';
+  return h;
+}
+function fmtStep(s){ // auto-format chemical formulae inside text: tokens like H2SO4, Ca(NO3)2, Na2ZnO2
+  return esc(s).replace(/\b(\d?)((?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d+)+)(?![a-z])/g,(m,coef,f)=>{ if(!/\d/.test(f)) return m; return coef+F(f)});
+}
+
+/* ---------------- TOOLS ---------------- */
+const TOOLS={
+ ph(el){
+  const ex=[[0.5,"Battery acid"],[1.5,"Stomach acid"],[2,"Lemon juice"],[2.5,"Cola"],[3,"Vinegar"],[5,"Black coffee"],[5.6,"Clean rain"],[7,"Pure water"],[7.4,"Blood"],[8,"Seawater"],[9,"Baking soda solution"],[10.5,"Milk of magnesia"],[11.5,"Household ammonia"],[12.5,"Bleach"],[13.5,"Oven cleaner"]];
+  el.innerHTML='<div class="tool"><span class="tool-h">pH explorer</span><div class="phbar" aria-hidden="true"></div><label for="phR" class="hint">Move the slider: pH <b id="phV" class="mono">7.0</b></label><input type="range" id="phR" min="0" max="14" step="0.5" value="7"><div class="grid2"><div class="swatch" id="phS" aria-hidden="true"></div><div class="readout"><div><small>Type</small><b id="phT"></b></div><div><small>[H⁺] mol/dm³</small><b id="phH"></b></div><div><small>[OH⁻] mol/dm³</small><b id="phO"></b></div><div><small>Example</small><b id="phE" style="font-family:var(--f-body)"></b></div></div></div><div class="readout"><div><small>Universal indicator</small><b id="iU"></b></div><div><small>Litmus</small><b id="iL"></b></div><div><small>Methyl orange</small><b id="iM"></b></div><div><small>Phenolphthalein</small><b id="iP"></b></div></div></div>';
+  const cols=[["#d7191c","red"],["#d7191c","red"],["#ee4a1f","red"],["#f27420","orange"],["#f59a1b","orange"],["#e6c21a","yellow"],["#e6d21a","yellow"],["#4caf3d","green"],["#2f9c6a","blue-green"],["#1b8f9a","blue-green"],["#2a55b8","blue"],["#3a46a8","blue"],["#4b35a0","indigo"],["#5b2a9a","violet"],["#5b2a9a","violet"]];
+  const up=()=>{const p=+$('#phR').value;const c=cols[Math.round(p)];$('#phV').textContent=p.toFixed(1);$('#phS').style.background=c[0];
+   $('#phT').textContent=p<3?"Strong acid":p<7?"Weak acid":p==7?"Neutral":p<=11?"Weak alkali":"Strong alkali";
+   $('#phH').textContent="1×10^"+(-p).toFixed(1).replace('.0','');$('#phO').textContent="1×10^"+(p-14).toFixed(1).replace('.0','');
+   let best=ex[0];ex.forEach(e=>{if(Math.abs(e[0]-p)<Math.abs(best[0]-p))best=e});$('#phE').textContent=best[1]+" (≈"+best[0]+")";
+   $('#iU').textContent=c[1];$('#iL').textContent=p<5?"red":p>8?"blue":"purple (in transition)";$('#iM').textContent=p<3.1?"red":p<=4.4?"orange":"yellow";$('#iP').textContent=p<8.2?"colourless":p<10?"pale pink":"pink"};
+  $('#phR').addEventListener('input',up);up();
+ },
+ react(el){
+  const R={HCl:{Mg:"Mg + 2HCl → MgCl2 + H2",Zn:"Zn + 2HCl → ZnCl2 + H2",CuO:"CuO + 2HCl → CuCl2 + H2O",NaOH:"NaOH + HCl → NaCl + H2O",CaCO3:"CaCO3 + 2HCl → CaCl2 + H2O + CO2",Na2CO3:"Na2CO3 + 2HCl → 2NaCl + H2O + CO2"},
+   H2SO4:{Mg:"Mg + H2SO4 → MgSO4 + H2",Zn:"Zn + H2SO4 → ZnSO4 + H2",CuO:"CuO + H2SO4 → CuSO4 + H2O",NaOH:"2NaOH + H2SO4 → Na2SO4 + 2H2O",CaCO3:"CaCO3 + H2SO4 → CaSO4 + H2O + CO2",Na2CO3:"Na2CO3 + H2SO4 → Na2SO4 + H2O + CO2"},
+   HNO3:{Mg:"Mg + 2HNO3 → Mg(NO3)2 + H2",Zn:"Zn + 2HNO3 → Zn(NO3)2 + H2",CuO:"CuO + 2HNO3 → Cu(NO3)2 + H2O",NaOH:"NaOH + HNO3 → NaNO3 + H2O",CaCO3:"CaCO3 + 2HNO3 → Ca(NO3)2 + H2O + CO2",Na2CO3:"Na2CO3 + 2HNO3 → 2NaNO3 + H2O + CO2"}};
+  const an={HCl:"hydrochloric acid",H2SO4:"sulfuric acid",HNO3:"nitric acid"};
+  const rn={Mg:["magnesium","metal"],Zn:["zinc","metal"],CuO:["copper(II) oxide","metal oxide"],NaOH:["sodium hydroxide","metal hydroxide"],CaCO3:["calcium carbonate","carbonate"],Na2CO3:["sodium carbonate","carbonate"]};
+  const sn={HCl:"chloride",H2SO4:"sulfate",HNO3:"nitrate"};const mn={Mg:"magnesium",Zn:"zinc",CuO:"copper(II)",NaOH:"sodium",CaCO3:"calcium",Na2CO3:"sodium"};
+  let A="HCl",B="Mg";
+  el.innerHTML='<div class="tool"><span class="tool-h">Reaction builder</span><div class="row"><span class="hint">Acid:</span><div class="seg" id="sa">'+Object.keys(R).map(k=>'<button data-v="'+k+'">'+F(k)+'</button>').join('')+'</div></div><div class="row"><span class="hint">Add:</span><div class="seg" id="sb">'+Object.keys(rn).map(k=>'<button data-v="'+k+'">'+F(k)+'</button>').join('')+'</div></div><div class="row"><button class="btn" id="rPredict">Show the reaction</button><span class="hint">Predict the salt first!</span></div><div id="rOut" class="eqbox" hidden></div></div>';
+  const mark=()=>{el.querySelectorAll('#sa button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===A));el.querySelectorAll('#sb button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===B));$('#rOut').hidden=true};
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.closest('#sa')){A=b.dataset.v;mark()}else if(b.closest('#sb')){B=b.dataset.v;mark()}else if(b.id==='rPredict'){
+   const type=rn[B][1];const gas=type==="metal"?"hydrogen":type==="carbonate"?"carbon dioxide":null;
+   const prods=type==="metal"?"salt + hydrogen":type==="carbonate"?"salt + water + carbon dioxide":"salt + water";
+   let note=gas==="hydrogen"?"Test: lit splint → squeaky pop.":gas?"Test: bubble through limewater → milky.":"No gas. Use an indicator to follow neutralisation.";
+   if(A==="HNO3"&&type==="metal")note+=" Note: nitric acid often produces nitrogen oxides with metals instead of hydrogen (it is an oxidising acid); hydrogen forms only when it is very dilute.";
+   if(A==="H2SO4"&&B==="CaCO3")note+=" Note: CaSO₄ is only slightly soluble, so it coats the chips and the reaction soon stops.";
+   const o=$('#rOut');o.hidden=false;o.innerHTML='<div>Type: acid + '+type+' → '+prods+'</div><div>'+esc(an[A])+' + '+esc(rn[B][0])+' → '+mn[B]+' '+sn[A]+(type==="metal"?' + hydrogen':type==="carbonate"?' + water + carbon dioxide':' + water')+'</div><div style="font-size:1.1em;font-weight:600">'+F(R[A][B])+'</div><div style="font-family:var(--f-body)">'+esc(note)+'</div>'}});
+  mark();
+ },
+ oxide(el){
+  const ox=[["Na2O","basic"],["MgO","basic"],["CaO","basic"],["CuO","basic"],["Al2O3","amphoteric"],["ZnO","amphoteric"],["CO2","acidic"],["SO2","acidic"],["P4O10","acidic"],["NO2","acidic"],["CO","neutral"],["NO","neutral"]];
+  el.innerHTML='<div class="tool"><span class="tool-h">Oxide classifier</span><p class="hint">Choose a type for each oxide, then check.</p><div class="oxides">'+ox.map((o,i)=>'<div class="ox" data-i="'+i+'"><span class="eq">'+F(o[0])+'</span><label class="hint" for="ox'+i+'" style="position:absolute;left:-9999px">Type for '+o[0]+'</label><select id="ox'+i+'"><option value="">choose…</option><option>basic</option><option>acidic</option><option>amphoteric</option><option>neutral</option></select></div>').join('')+'</div><div class="row"><button class="btn" id="oxC">Check</button><button class="btn ghost" id="oxR">Reset</button><span id="oxS" class="hint"></span></div></div>';
+  $('#oxC').onclick=()=>{let s=0;ox.forEach((o,i)=>{const d=el.querySelector('.ox[data-i="'+i+'"]');const v=$('#ox'+i).value;d.classList.toggle('good',v===o[1]);d.classList.toggle('badx',!!v&&v!==o[1]);if(v===o[1])s++});$('#oxS').textContent=s+' / '+ox.length+' correct. Tip: metal → basic, non-metal → acidic, Al and Zn → amphoteric, CO and NO → neutral.'};
+  $('#oxR').onclick=()=>{ox.forEach((o,i)=>{$('#ox'+i).value='';el.querySelector('.ox[data-i="'+i+'"]').className='ox'});$('#oxS').textContent=''};
+ },
+ salt(el){
+  const S=[["CuSO4","excess","Soluble salt; CuO is an insoluble base, so add excess CuO to H₂SO₄."],["ZnCl2","excess","Soluble salt; zinc metal, ZnO or ZnCO₃ is insoluble, so use excess with HCl."],["MgSO4","excess","Soluble; add excess MgO or MgCO₃ to sulfuric acid."],["NaCl","titration","Sodium salt: NaOH is soluble, so titrate with HCl."],["KNO3","titration","Potassium salt: titrate KOH with HNO₃."],["(NH4)2SO4","titration","Ammonium salt: titrate ammonia solution with H₂SO₄."],["BaSO4","precipitation","Insoluble: BaCl₂(aq) + Na₂SO₄(aq)."],["AgCl","precipitation","Insoluble: AgNO₃(aq) + NaCl(aq)."],["PbI2","precipitation","Insoluble: Pb(NO₃)₂(aq) + KI(aq)."],["CaCO3","precipitation","Insoluble: CaCl₂(aq) + Na₂CO₃(aq)."]];
+  let i=0,score=0,done=0;
+  el.innerHTML='<div class="tool"><span class="tool-h">Method chooser</span><p class="hint">Is the salt soluble? Is the base soluble? Pick the method.</p><div class="row"><span>Target salt:</span><span class="eq" id="sT" style="font-size:1.4rem;font-weight:600"></span></div><div class="seg" id="sM"><button data-m="excess">Excess method</button><button data-m="titration">Titration</button><button data-m="precipitation">Precipitation</button></div><div id="sF" class="fb" hidden></div><div class="row"><button class="btn ghost" id="sN">Next salt</button><span id="sS" class="hint"></span></div></div>';
+  const show=()=>{$('#sT').innerHTML=F(S[i][0]);$('#sF').hidden=true;el.querySelectorAll('#sM button').forEach(b=>{b.disabled=false;b.setAttribute('aria-pressed','false')})};
+  el.querySelector('#sM').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const ok=b.dataset.m===S[i][1];done++;if(ok)score++;b.setAttribute('aria-pressed','true');el.querySelectorAll('#sM button').forEach(x=>x.disabled=true);const f=$('#sF');f.hidden=false;f.className='fb '+(ok?'ok':'no');f.textContent=(ok?'Correct. ':'Not quite — use '+S[i][1]+'. ')+S[i][2];$('#sS').textContent='Score '+score+' / '+done};
+  $('#sN').onclick=()=>{i=(i+1)%S.length;show()};show();
+ },
+ titr(el){
+  let Ca=+(0.080+Math.random()*0.07).toFixed(3),Cb=0.100,Va=25.0,v=0,ind="php",pts=[];
+  el.innerHTML='<div class="tool"><span class="tool-h">Titration simulator</span><p class="hint">25.0 cm³ of hydrochloric acid (unknown concentration) is in the flask. The burette holds 0.100 mol/dm³ NaOH. Find the end point, then calculate the acid concentration.</p>'+
+   '<div class="row"><span class="hint">Indicator:</span><div class="seg" id="tI"><button data-i="php" aria-pressed="true">Phenolphthalein</button><button data-i="mo" aria-pressed="false">Methyl orange</button></div></div>'+
+   '<div class="flaskwrap"><svg viewBox="0 0 120 150" width="120" height="150" role="img" aria-label="Conical flask"><path d="M45 10 h30 v40 l35 85 q3 8 -6 8 h-88 q-9 0 -6 -8 l35 -85 z" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--muted)"/><path id="liq" d="M28 92 h64 l18 43 q3 8 -6 8 h-88 q-9 0 -6 -8 z" fill="#eef3f6" stroke="none"/></svg>'+
+   '<div class="readout"><div><small>Burette reading / cm³ ±0.05</small><b id="tV">0.00</b></div><div><small>pH in flask</small><b id="tP"></b></div><div><small>Flask colour</small><b id="tC" style="font-family:var(--f-body)"></b></div><div><small>NaOH added / mol</small><b id="tN"></b></div></div></div>'+
+   '<div class="row"><button class="btn" data-a="5">+5.00</button><button class="btn" data-a="1">+1.00</button><button class="btn" data-a="0.1">+0.10</button><button class="btn" data-a="0.05">+1 drop (0.05)</button><button class="btn ghost" id="tR">Refill & repeat</button><button class="btn ghost" id="tNew">New unknown acid</button></div>'+
+   '<div class="svgwrap"><svg id="curve" viewBox="0 0 520 220" width="100%" style="min-width:420px" role="img" aria-label="pH against volume of NaOH added"></svg></div>'+
+   '<div class="grid2"><div class="card"><h4>Your calculation</h4><label for="tAns" class="hint">Acid concentration (mol/dm³)</label><input type="number" id="tAns" step="0.001" placeholder="e.g. 0.112"><button class="btn" id="tChk" style="justify-self:start">Check</button><div id="tF" class="fb" hidden></div></div><div class="card godinline" style="display:none" id="tGod"></div></div></div>';
+  const pH=x=>{const nH=Ca*Va/1000,nO=Cb*x/1000,Vt=(Va+x)/1000;const d=nH-nO;if(Math.abs(d)<1e-9)return 7;return d>0?-Math.log10(d/Vt):14+Math.log10(-d/Vt)};
+  const col=p=>ind==="php"?(p<8.2?["#eef3f6","colourless"]:p<10?["#f6b6d6","pale pink — end point!"]:["#e0408f","deep pink (overshot)"]):(p<3.1?["#e8453c","red"]:p<=4.4?["#f39a2d","orange — end point!"]:["#f2d43a","yellow"]);
+  const draw=()=>{const s=$('#curve');const X=x=>50+x*9,Y=p=>200-p*13;let g='';for(let p=0;p<=14;p+=2)g+='<line x1="50" x2="500" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="var(--line)"/><text x="40" y="'+(Y(p)+3)+'" text-anchor="end">'+p+'</text>';for(let x=0;x<=50;x+=10)g+='<text x="'+X(x)+'" y="215" text-anchor="middle">'+x+'</text>';
+   g+='<text x="275" y="12" text-anchor="middle">pH vs volume of NaOH / cm³</text>';
+   if(pts.length>1)g+='<polyline fill="none" stroke="var(--accent)" stroke-width="2.5" points="'+pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'"/>';
+   pts.forEach(p=>g+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="2.5" fill="var(--accent)"/>');s.innerHTML=g};
+  const up=()=>{const p=pH(v);const c=col(p);$('#tV').textContent=v.toFixed(2);$('#tP').textContent=p.toFixed(2);$('#tC').textContent=c[1];$('#liq').setAttribute('fill',c[0]);$('#tN').textContent=(Cb*v/1000).toFixed(5);
+   $('#tGod').innerHTML='God mode: acid = '+Ca.toFixed(3)+' mol/dm³; equivalence at '+(Ca*Va/Cb).toFixed(2)+' cm³.';draw()};
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+   if(b.dataset.a){v=Math.min(50,+(v+ +b.dataset.a).toFixed(2));pts.push([v,pH(v)]);up()}
+   else if(b.dataset.i){ind=b.dataset.i;el.querySelectorAll('#tI button').forEach(x=>x.setAttribute('aria-pressed',x===b));up()}
+   else if(b.id==='tR'){v=0;pts=[[0,pH(0)]];up()}
+   else if(b.id==='tNew'){Ca=+(0.080+Math.random()*0.07).toFixed(3);v=0;pts=[[0,pH(0)]];$('#tF').hidden=true;up();toast('New unknown acid loaded')}
+   else if(b.id==='tChk'){const a=+$('#tAns').value;const f=$('#tF');f.hidden=false;const err=Math.abs(a-Ca)/Ca;f.className='fb '+(err<=0.02?'ok':'no');f.textContent=!a?'Enter a value first.':err<=0.02?'Within 2% — excellent titration and calculation.':err<=0.06?'Close (within 6%). Check your end point: add drop by drop near it.':'Not yet. Moles NaOH = 0.100 × titre ÷ 1000; ratio 1 : 1; concentration = moles ÷ 0.0250.'}});
+  pts=[[0,pH(0)]];up();
+  const sync=()=>{$('#tGod').style.display=document.body.classList.contains('god')?'block':'none'};sync();document.addEventListener('godchange',sync);
+ },
+ trend(el){
+  const P=[["Na","Na2O","basic","Reacts with water → NaOH (pH ≈ 14)"],["Mg","MgO","basic","Slightly soluble → Mg(OH)2 (pH ≈ 9–10)"],["Al","Al2O3","amphoteric","Insoluble; reacts with acids and alkalis"],["Si","SiO2","acidic","Insoluble; reacts with hot concentrated alkali"],["P","P4O10","acidic","Reacts with water → H3PO4 (pH ≈ 1–2)"],["S","SO2","acidic","Dissolves → H2SO3 (pH ≈ 2–3)"]];
+  el.innerHTML='<div class="tool"><span class="tool-h">Period 3 oxide explorer</span><div class="seg" id="pS">'+P.map((p,i)=>'<button data-i="'+i+'">'+p[0]+'</button>').join('')+'</div><div class="readout"><div><small>Oxide</small><b id="pO"></b></div><div><small>Nature</small><b id="pN"></b></div><div><small>With water</small><b id="pW" style="font-family:var(--f-body)"></b></div><div><small>Element type</small><b id="pT" style="font-family:var(--f-body)"></b></div></div><div class="phbar" style="height:10px" aria-hidden="true"></div><p class="hint">Left to right: metals → metalloid → non-metals; basic → amphoteric → acidic.</p></div>';
+  const sel=i=>{const p=P[i];el.querySelectorAll('#pS button').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));$('#pO').innerHTML=F(p[1]);$('#pN').textContent=p[2];$('#pW').innerHTML=fmtStep(p[3]);$('#pT').textContent=i<3?'metal':i===3?'metalloid':'non-metal'};
+  el.querySelector('#pS').onclick=e=>{const b=e.target.closest('button');if(b)sel(+b.dataset.i)};sel(0);
+ },
+ case(el){
+  const f=[["aud","Who is your audience?","e.g. maize farmers in Zomba; Grade 6 students; local council"],["claim","Your main message in one sentence","e.g. Liming acidic soil can raise maize yields."],["chem","The chemistry (with one balanced equation)","e.g. CaCO3 + 2H+ → Ca2+ + H2O + CO2"],["plain","Say it in plain language / analogy","e.g. Lime works like an indigestion tablet for soil."],["imp","Implications: environmental, economic, social, ethical",""],["src","Sources (author, title, website, date accessed)",""]];
+  const d=store.get('case',{});
+  el.innerHTML='<div class="tool"><span class="tool-h">Audience planner · Criterion D</span>'+f.map(x=>'<label for="c_'+x[0]+'"><b>'+x[1]+'</b></label><textarea id="c_'+x[0]+'" placeholder="'+esc(x[2])+'">'+esc(d[x[0]]||'')+'</textarea>').join('')+'<div class="row"><button class="btn" id="cCopy">Copy my plan</button><span class="hint">Saved on this device as you type.</span></div></div>';
+  el.addEventListener('input',e=>{if(e.target.id&&e.target.id.startsWith('c_')){d[e.target.id.slice(2)]=e.target.value;store.set('case',d)}});
+  $('#cCopy').onclick=()=>{const txt=f.map(x=>x[1]+':\n'+(d[x[0]]||'')).join('\n\n');(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Plan copied')).catch(()=>toast('Select the text and copy it manually'))};
+ },
+ inv(el){
+  const IV={conc:["Concentration of HCl (mol/dm³)","Titre of HCl needed to neutralise 25.0 cm³ NaOH (cm³)","Volume and concentration of NaOH; indicator and number of drops; same burette and pipette; temperature"],type:["Type of acid (HCl vs H₂SO₄, same concentration)","Titre of acid (cm³)","Acid concentration; NaOH volume and concentration; indicator; temperature"],ant:["Brand of antacid tablet","Volume of 0.100 mol/dm³ HCl neutralised per tablet (cm³)","Mass of tablet (or one tablet each); acid concentration; indicator; tablet crushed the same way; temperature"],temp:["Volume of acid added (cm³)","Maximum temperature rise (°C)","Concentration of acid and alkali; volume of alkali; insulated cup; same thermometer; starting temperature"]};
+  const d=store.get('inv',{iv:'conc',rows:[["0.050","","",""],["0.100","","",""],["0.150","","",""],["0.200","","",""]]});
+  el.innerHTML='<div class="tool"><span class="tool-h">Investigation planner + concordance calculator</span><label for="ivSel"><b>Choose your investigation</b></label><select id="ivSel"><option value="conc">Effect of acid concentration on titre</option><option value="type">Type of acid</option><option value="ant">Antacid brands</option><option value="temp">Temperature rise (thermometric)</option></select><div class="readout" id="ivR"></div>'+
+   '<label for="hyp"><b>Hypothesis</b> (If … then … because …)</label><textarea id="hyp">'+esc(d.hyp||'')+'</textarea>'+
+   '<b>Raw and processed data</b><p class="hint">Enter titres to 2 d.p. The mean uses only concordant values (within 0.10 cm³).</p><div class="tablewrap"><table class="data"><thead><tr><th>IV value</th><th>Trial 1 / cm³ ±0.05</th><th>Trial 2 / cm³ ±0.05</th><th>Trial 3 / cm³ ±0.05</th><th>Mean / cm³</th><th>Concordant?</th></tr></thead><tbody id="ivB"></tbody></table></div><div class="row"><button class="btn ghost" id="ivAdd">Add row</button><button class="btn ghost" id="ivCopy">Copy table</button></div>'+
+   '<div class="card"><h4>Evaluation frame</h4><p>My hypothesis is <i>supported / partly supported / not supported</i> because the data show … One source of error was … which made my titres too <i>high / low</i>. To improve, I would … To extend, I could …</p></div></div>';
+  const meanC=t=>{const v=t.map(Number).filter(x=>x>0);if(v.length<2)return[null,'—'];let best=null;for(let i=0;i<v.length;i++)for(let j=i+1;j<v.length;j++)if(Math.abs(v[i]-v[j])<=0.1001){const grp=v.filter(x=>Math.abs(x-v[i])<=0.1001&&Math.abs(x-v[j])<=0.1001);if(!best||grp.length>best.length)best=grp}
+   if(!best)return[v.reduce((a,b)=>a+b,0)/v.length,'No — repeat'];return[best.reduce((a,b)=>a+b,0)/best.length,'Yes ('+best.length+')']};
+  const body=()=>{$('#ivB').innerHTML=d.rows.map((r,i)=>{const m=meanC(r.slice(1));return '<tr><td><input type="text" data-r="'+i+'" data-c="0" value="'+esc(r[0])+'" aria-label="IV value row '+(i+1)+'"></td>'+[1,2,3].map(c=>'<td><input type="number" step="0.05" data-r="'+i+'" data-c="'+c+'" value="'+esc(r[c])+'" aria-label="Trial '+c+' row '+(i+1)+'"></td>').join('')+'<td class="mono" data-m="'+i+'">'+(m[0]==null?'—':m[0].toFixed(2))+'</td><td data-k="'+i+'">'+m[1]+'</td></tr>'}).join('')};
+  const ivR=()=>{const x=IV[d.iv];$('#ivSel').value=d.iv;$('#ivR').innerHTML='<div><small>Independent variable</small><b style="font-family:var(--f-body)">'+x[0]+'</b></div><div><small>Dependent variable</small><b style="font-family:var(--f-body)">'+x[1]+'</b></div><div style="grid-column:1/-1"><small>Controlled variables (say how you control each)</small><b style="font-family:var(--f-body)">'+x[2]+'</b></div>'};
+  el.addEventListener('input',e=>{const t=e.target;if(t.dataset.r!=null){d.rows[+t.dataset.r][+t.dataset.c]=t.value;store.set('inv',d);const i=+t.dataset.r;const m=meanC(d.rows[i].slice(1));el.querySelector('[data-m="'+i+'"]').textContent=m[0]==null?'—':m[0].toFixed(2);el.querySelector('[data-k="'+i+'"]').textContent=m[1]}else if(t.id==='hyp'){d.hyp=t.value;store.set('inv',d)}});
+  $('#ivSel').onchange=e=>{d.iv=e.target.value;store.set('inv',d);ivR()};
+  $('#ivAdd').onclick=()=>{d.rows.push(["","","",""]);store.set('inv',d);body()};
+  $('#ivCopy').onclick=()=>{const txt='IV\tTrial 1\tTrial 2\tTrial 3\tMean\n'+d.rows.map(r=>{const m=meanC(r.slice(1));return r.join('\t')+'\t'+(m[0]==null?'':m[0].toFixed(2))}).join('\n');(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Table copied — paste into Sheets or Excel')).catch(()=>toast('Copy not available here'))};
+  ivR();body();
+ }
+};
+
+/* ---------------- ROUTER & EVENTS ---------------- */
+function go(){
+  let id=(location.hash||'#overview').slice(1);const l=L.find(x=>x.id===id);if(!l&&id!=='planner')id='overview';
+  speechStop();rail(id);
+  $('#main').innerHTML=l?lesson(l):id==='planner'?planner():overview();
+  if(l&&l.tool&&TOOLS[l.tool])TOOLS[l.tool]($('#tool'));
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',go);
+
+$('#main').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const id=(location.hash||'').slice(1);
+  if(b.hasAttribute('data-say')){speak(b.closest('section'),b);return}
+  if(b.dataset.copy!=null){const p=PLAN[+b.dataset.copy];let txt=p.s+'\nUDL guidelines: '+p.g.join(', ')+'\n\n'+p.i.map(x=>'• '+plain(x)).join('\n');
+   if(p.bo)txt+='\n\nLesson | Barrier | Option\n'+L.map(l=>l.code+' | '+BO[l.id][0]+' | '+BO[l.id][1]).join('\n');
+   (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Copied — paste into ManageBac')).catch(()=>toast('Copy blocked: select the text and copy it'));return}
+  const we=b.closest('.we');
+  if(we){const items=[...we.querySelectorAll('li')];if(b.hasAttribute('data-next')){const n=items.find(x=>x.hidden);if(n)n.hidden=false;if(!items.some(x=>x.hidden))b.disabled=true}
+   if(b.hasAttribute('data-all')){items.forEach(x=>x.hidden=false);we.querySelector('[data-next]').disabled=true}
+   if(b.hasAttribute('data-reset')){items.forEach((x,i)=>x.hidden=i>0);we.querySelector('[data-next]').disabled=false}return}
+  if(b.dataset.o!=null){const q=b.closest('.q');const l=L.find(x=>x.id===id);const p=l.practice[+q.dataset.q];const ok=+b.dataset.o===p.c;
+   b.classList.add(ok?'right':'wrong');const f=q.querySelector('.fb');f.hidden=false;f.className='fb '+(ok?'ok':'no');f.innerHTML=(ok?'Correct. ':'Not quite — try again. Hint: ')+(ok?esc(p.w):esc(p.w.split(/[.;]/)[0])+'.');
+   if(ok)q.querySelectorAll('.q-opts button').forEach(x=>x.disabled=true);return}
+  if(b.dataset.choice!=null){store.set('choice_'+id,+b.dataset.choice);b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));toast('Route chosen: '+b.querySelector('b').textContent);return}
+  if(b.dataset.express!=null){store.set('express_'+id,+b.dataset.express);b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));toast('Task chosen: '+b.querySelector('b').textContent);return}
+  if(b.dataset.rate){const r=store.get('rate',{});r[id]=+b.dataset.rate;store.set('rate',r);b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));rail(id);toast('Confidence saved');return}
+});
+$('#main').addEventListener('change',e=>{if(e.target.dataset.ck!=null){const ck=store.get('ck',[false,false,false]);ck[+e.target.dataset.ck]=e.target.checked;store.set('ck',ck)}});
+$('#main').addEventListener('input',e=>{if(e.target.id==='exitNotes')store.set('exit_'+(location.hash||'').slice(1),e.target.value)});
+
+/* read aloud */
+let speaking=null;
+function speechStop(){try{speechSynthesis.cancel()}catch(e){}if(speaking){speaking.textContent='Read aloud';speaking=null}}
+function speak(sec,btn){
+  if(!('speechSynthesis' in window)){toast('Read aloud is not available in this browser');return}
+  if(speaking===btn){speechStop();return}speechStop();
+  const c=sec.cloneNode(true);c.querySelectorAll('button,.godinline,.godpanel').forEach(x=>x.remove());
+  const u=new SpeechSynthesisUtterance(c.textContent.replace(/\s+/g,' ').trim());u.lang='en-GB';u.rate=.95;u.onend=()=>speechStop();
+  speaking=btn;btn.textContent='Stop';speechSynthesis.speak(u);
+}
+
+/* toolbar */
+const pref=store.get('pref',{fs:17,sp:false,fo:false});
+function applyPref(){document.documentElement.style.setProperty('--fs',pref.fs+'px');
+  document.documentElement.style.setProperty('--lh',pref.sp?'1.9':'1.6');document.documentElement.style.setProperty('--ls',pref.sp?'0.04em':'0');
+  $('#tSpace').setAttribute('aria-pressed',pref.sp);$('#tFocus').setAttribute('aria-pressed',pref.fo);document.body.classList.toggle('focus',pref.fo);store.set('pref',pref)}
+$('#tBigger').onclick=()=>{pref.fs=Math.min(24,pref.fs+1);applyPref()};
+$('#tSmaller').onclick=()=>{pref.fs=Math.max(14,pref.fs-1);applyPref()};
+$('#tSpace').onclick=()=>{pref.sp=!pref.sp;applyPref()};
+$('#tFocus').onclick=()=>{pref.fo=!pref.fo;applyPref();toast(pref.fo?'Focus mode: extra choices hidden':'All sections shown')};
+function setGod(on){document.body.classList.toggle('god',on);$('#tGod').setAttribute('aria-pressed',on);$('#godLock').hidden=true;document.dispatchEvent(new Event('godchange'));toast(on?'God mode on: teacher notes and answers visible':'God mode off')}
+$('#tGod').onclick=()=>{if(document.body.classList.contains('god')){setGod(false);return}const lk=$('#godLock');lk.hidden=!lk.hidden;if(!lk.hidden)$('#godCode').focus()};
+const tryGod=()=>{if($('#godCode').value.trim().toUpperCase()==='BMIS'){$('#godCode').value='';setGod(true)}else toast('Incorrect teacher code')};
+$('#godGo').onclick=tryGod;$('#godCode').addEventListener('keydown',e=>{if(e.key==='Enter')tryGod()});
+/* glossary */
+function gl(q){q=(q||'').toLowerCase();$('#glossList').innerHTML=GL.filter(v=>!q||v[0].toLowerCase().includes(q)||v[1].toLowerCase().includes(q)).map(v=>'<div><b>'+esc(v[0])+'</b>'+esc(v[1])+'</div>').join('')||'<p class="hint">No match.</p>'}
+$('#tGloss').onclick=()=>{$('#glossary').hidden=false;gl('');$('#glossSearch').focus()};
+$('#glossClose').onclick=()=>$('#glossary').hidden=true;
+$('#glossSearch').addEventListener('input',e=>gl(e.target.value));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#glossary').hidden=true});
+
+applyPref();go();
+})();
+</script>
+
+</body></html>
